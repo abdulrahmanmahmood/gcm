@@ -29,27 +29,27 @@ const CompanyProfilePage = ({ params }: { params: { companyid: number } }) => {
     <div className="container mx-auto p-8">
       <div className="container mx-auto p-8 min-h-screen overflow-y-auto pb-20">
         <CompanyViewCardHeader
-          type={companyData.type}
+          type={companyData?.type}
           email=""
           enabled
-          industry={companyData.industry}
-          id={companyData.id}
-          url={`/companymanage/subercontainercompanies/edit/${companyData.id}`}
-          name={companyData.name}
+          industry={companyData?.industry}
+          id={companyData?.id}
+          url={`/companymanage/subercontainercompanies/edit/${companyData?.id}`}
+          name={companyData?.name}
           locked
           website={companyData?.website ?? "not having website"}
-          status={companyData.status}
+          status={companyData?.status}
         />
         {/* Company Information */}
 
         <CCDetailsSection
-          createdDate={companyData.createdDate}
-          headPhoneNumber={companyData.headInfo?.phoneNumber}
-          email={companyData.email}
-          faxNumber={companyData.faxNumber}
-          headEmail={companyData.headInfo?.email}
-          headName={companyData.headInfo?.name}
-          modifiedDate={companyData.modifiedDate}
+          createdDate={companyData?.createdDate}
+          headPhoneNumber={companyData?.headInfo?.phoneNumber}
+          email={companyData?.email}
+          faxNumber={companyData?.faxNumber}
+          headEmail={companyData?.headInfo?.email}
+          headName={companyData?.headInfo?.name}
+          modifiedDate={companyData?.modifiedDate}
         />
         <UserCardAddressSection
           city={companyData?.address?.city || "N/A"}

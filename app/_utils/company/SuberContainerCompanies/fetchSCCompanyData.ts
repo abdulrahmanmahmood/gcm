@@ -15,7 +15,7 @@ export interface ICompany {
   modifiedDate: string | null;
   industry: string | null;
   status: "ACTIVE" | "INACTIVE" | "CLOSED"; // Status types
-  type: "CLIENT" | "PARTNER" | "SUBCONTRACTOR";
+  type: "CLIENT" | "SUBCONTRACTOR";
   website: string | null;
   logoViewUrl: string | null;
   address: {

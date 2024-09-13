@@ -1,17 +1,17 @@
 import React from "react";
 interface IProps {
   email?: string; // Allow both string and number types for email
-  faxNumber?: number;
+  faxNumber?: string | undefined | null;
   headName?: string;
   headEmail?: string;
-  headPhoneNumber: string;
-  createdDate: string;
-  modifiedDate?: string;
+  headPhoneNumber?: string;
+  createdDate?: string;
+  modifiedDate?: string | null;
 }
 
 const CCDetailsSection = ({
   email = "N/A", // Fallback to "N/A" if email is undefined
-  faxNumber = 0, // Fallback to 0 if faxNumber is undefined
+  faxNumber = "N/A", // Fallback to 0 if faxNumber is undefined
   headName = "N/A", // Fallback to "N/A" if headName is undefined
   headEmail = "N/A",
   headPhoneNumber = "N/A",

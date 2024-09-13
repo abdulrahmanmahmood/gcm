@@ -39,7 +39,7 @@ const CompanyProfilePage = ({ params }: { params: { companyid: number } }) => {
         name={companyData.name}
         locked
         website={companyData?.website ?? "not having website"}
-        status={companyData.status}
+        status={companyData?.status}
       />
       {/* Company Information */}
 

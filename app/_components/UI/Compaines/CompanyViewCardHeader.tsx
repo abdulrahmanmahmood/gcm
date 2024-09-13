@@ -4,16 +4,16 @@ import testImage from "../../../../public/logo.jpg";
 import Link from "next/link";
 interface Iprops {
   image?: string | StaticImageData;
-  email: string;
-  id: string;
-  industry: string;
-  name: string;
-  type: string | undefined;
-  enabled: boolean;
-  locked: boolean;
-  url: string;
-  website: string;
-  status: string;
+  email?: string;
+  id?: number;
+  industry?: string | null;
+  name?: string;
+  type?: string | undefined;
+  enabled?: boolean;
+  locked?: boolean;
+  url?: string;
+  website?: string;
+  status?: string;
 }
 
 const CompanyViewCardHeader = ({
@@ -27,8 +27,7 @@ const CompanyViewCardHeader = ({
   name,
   url,
   website,
-  status
-
+  status,
 }: Iprops) => {
   return (
     <div className="w-full px-9 pt-9 flex-auto min-h-[70px] pb-0 bg-transparent">

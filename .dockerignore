@@ -1,0 +1,10 @@
+# Ignore node_modules to prevent copying local dependencies into the Docker image
+node_modules
+
+# Ignore any other unnecessary files
+npm-debug.log
+yarn-error.log
+.DS_Store
+.git
+.cache
+.next
