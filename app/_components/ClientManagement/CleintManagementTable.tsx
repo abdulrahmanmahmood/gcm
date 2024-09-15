@@ -41,7 +41,7 @@ const CleintManagementTable = () => {
 
   // Search Handler
 
-  const handleSearch = (keyword: string) => {
+  const handleSearch = (keyword: string, filters: any) => {
     setSearchKeyword(keyword);
     setFilters(filters);
     setPageNumber(0); // Reset to first page when new search is triggered
