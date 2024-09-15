@@ -4,11 +4,7 @@ import React, { useState } from "react";
 interface IProps {
   onSearch: (keyword: string, filters: any) => void;
 }
-interface IProps {
-  onSearch: (keyword: string, filters: any) => void;
-}
-
-const ClientManagementNav = ({ onSearch }: IProps) => {
+const ProjectsManagementNav= ({ onSearch }: IProps) => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [locked, setLocked] = useState<string | boolean>(""); // Empty string for unset state
@@ -204,4 +200,4 @@ const ClientManagementNav = ({ onSearch }: IProps) => {
   );
 };
 
-export default ClientManagementNav;
+export default  ProjectsManagementNav

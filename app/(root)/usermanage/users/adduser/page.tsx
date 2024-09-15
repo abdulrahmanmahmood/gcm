@@ -142,7 +142,9 @@ const page = () => {
               <label className="block text-gray-700">Salary</label>
               <input
                 type="number"
-                {...register("salary")}
+                pattern="^\d*(\.\d{1,2})?$" // This ensures only numbers with up to two decimal places are allowed
+                step="0.01"
+                {...register("salary", { valueAsNumber: true })} // Optional: Use valueAsNumber to make sure it's treated as a number
                 className="border rounded-lg w-full px-3 py-2"
               />
             </div>

@@ -1,20 +1,20 @@
 "use client";
+import ProjectsManagementNav from "@/app/_components/ProjectsManagementNav";
 import React, { useEffect, useState } from "react";
-import UserManagmentTableHeader from "./UserManagmentTableHeader";
-import UserManagementBodyRow from "./UserManagementBodyRow";
+import PrjectsManagementHeader from "./PrjectsManagementHeader";
+import ProjectsManagementTableHeader from "./ProjectsManagementTableHeader";
+import { User, UsersAxiosResponse } from "@/app/_interfaces";
+import Pagination from "@/app/_utils/Pagination";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { fetchUsers } from "../_utils/fetchUsers";
-import { User, UsersAxiosResponse } from "../_interfaces";
-import Pagination from "../_utils/Pagination";
-import UserManagementNav from "./UserManagementNav";
-import UserManagementHeader from "./UI/UserManagementHeader";
+import { fetchUsers } from "@/app/_utils/fetchUsers";
 
-function UserManagementTable() {
+function ProjectsManagementTable() {
   const [pageNumber, setPageNumber] = useState(0); // Track the current page
   const [pageSize, setPageSize] = useState(10); // Track the page size
   const [searchKeyword, setSearchKeyword] = useState(""); // Track the search keyword
   const [filters, setFilters] = useState<any>({}); // Store the filters here
-  const [sortBy, setSortBy] = useState<string[]>(["ID_ASC"]); // Default sort by ID ascending
+  const [sortBy, setSortBy] = useState<string>("id");
+  const [sortDirection, setSortDirection] = useState<string>("asc");
 
   const { data, error, isLoading, refetch } = useQuery<UsersAxiosResponse>({
     queryKey: [
@@ -24,9 +24,17 @@ function UserManagementTable() {
       searchKeyword,
       filters,
       sortBy,
+      sortDirection,
     ],
     queryFn: () =>
-      fetchUsers(pageNumber, pageSize, searchKeyword, filters, sortBy),
+      fetchUsers(
+        pageNumber,
+        pageSize,
+        searchKeyword,
+        filters,
+        sortBy
+        // sortDirection
+      ),
     placeholderData: keepPreviousData,
     staleTime: 5 * 60 * 1000,
   });
@@ -43,7 +51,7 @@ function UserManagementTable() {
 
   useEffect(() => {
     refetch();
-  }, [searchKeyword, filters, sortBy]);
+  }, [searchKeyword, filters, sortBy, sortDirection]);
 
   // Search Handler
 
@@ -52,37 +60,15 @@ function UserManagementTable() {
     setFilters(filters);
     setPageNumber(0); // Reset to first page when new search is triggered
   };
-  // Sort Mapping
-  const sortMapping: { [key: string]: string } = {
-    fullName: "FULL_NAME",
-    id: "ID",
-    gender: "GENDER",
-    salary: "SALARY",
-    role: "ROLE",
-    registrationDate: "CREATED_DATE",
-    enabled: "ENABLED",
-    locked: "LOCKED",
-  };
 
-  // Handle Sort Function
+  // ////////////handle sort
   const handleSort = (column: string) => {
-    const mappedColumn = sortMapping[column];
-    const currentSort = sortBy.find((sort) => sort.startsWith(mappedColumn));
-
-    let newSortArray = [...sortBy];
-
-    if (currentSort) {
-      // If sorting by the same column, toggle between ASC and DESC
-      const newSortDirection = currentSort.endsWith("ASC") ? "DESC" : "ASC";
-      newSortArray = newSortArray.map((sort) =>
-        sort.startsWith(mappedColumn) ? `${mappedColumn}_${newSortDirection}` : sort
-      );
+    if (sortBy === column) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
-      // If sorting by a new column, add it to the array
-      newSortArray = [`${mappedColumn}_ASC`, ...newSortArray];
+      setSortBy(column);
+      setSortDirection("asc"); // Default to ascending when switching columns
     }
-
-    setSortBy(newSortArray);
     setPageNumber(0); // Reset to first page when new sorting is triggered
   };
 
@@ -102,20 +88,21 @@ function UserManagementTable() {
 
   return (
     <>
-      <UserManagementNav onSearch={handleSearch} />
-      <UserManagementHeader />
+      <ProjectsManagementNav onSearch={handleSearch} />
+      <PrjectsManagementHeader />
 
       {/* component */}
       <div className="overflow-auto h-[72vh] shadow-md p-1">
         <table className="w-full border-collapse bg-white  text-sm text-petrol text-center text-nowrap ">
-          <UserManagmentTableHeader
+          <ProjectsManagementTableHeader
             sortBy={sortBy}
+            sortDirection={sortDirection}
             onSort={handleSort}
-          />
+          />{" "}
           <tbody className="divide-y divide-gray-100 border-t border-gray-100  max-h-[60vh]">
-            {data?.content?.map((user: User) => (
+            {/* {data?.content?.map((user: User) => (
               <UserManagementBodyRow key={user.id} user={user} />
-            ))}
+            ))} */}
           </tbody>
         </table>
       </div>
@@ -159,4 +146,4 @@ function UserManagementTable() {
   );
 }
 
-export default UserManagementTable;
+export default ProjectsManagementTable;

@@ -41,11 +41,18 @@ const UserManagementBodyRow = ({ user }: IProps) => {
       {/* FullName , Avatar And Email */}
       <th className="flex gap-3 px-6 py-4 font-normal text-gray-900">
         <div className="relative h-10 w-10">
-          <img
-            className="h-full w-full rounded-full object-cover object-center"
-            src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-            alt=""
-          />
+          {user.pictureExists && user.picture ? (
+            <img
+              src={`data:${user.picture.contentType};base64,${user.picture.data}`}
+              alt="Uploaded"
+            />
+          ) : (
+            <img
+              className="h-full w-full rounded-full object-cover object-center"
+              src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+              alt=""
+            />
+          )}
         </div>
         <div className="text-sm">
           <div className="font-medium text-gray-700">{user.fullName}</div>
@@ -148,7 +155,7 @@ const UserManagementBodyRow = ({ user }: IProps) => {
                 <Link href={`users/${user.id}`}>View</Link>
               </button>
               <button className="w-full text-left px-4 py-2 text-sm text-petrol hover:bg-gray-100">
-                <Link href={`users/edit/${user.id}`}>Edit</Link>
+                <Link href={`/usermanage/users/edit/${user.id}`}>Edit</Link>
               </button>
             </div>
           </div>

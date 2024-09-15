@@ -28,9 +28,18 @@ export interface User {
   modifiedDate: string | null;
   authorities: string[];
   gender: string;
-  existsPicture: boolean;
+  pictureExists: boolean;
   getPictureDownloadUrl: string | null;
   getPictureViewUrl: string | null;
+  picture?: {
+    data: string;
+    id: string;
+    basename: string;
+    extension: string;
+    contentType: string;
+    size: number;
+    uploadDate: string;
+  };
   role?: string;
   salary?: number;
   phoneNumber?: number;
@@ -49,7 +58,7 @@ export interface Cleint {
   modifiedDate: string | null;
   authorities: string[];
   gender: string;
-  existsPicture: boolean;
+  pictureExists: boolean;
   getPictureDownloadUrl: string | null;
   getPictureViewUrl: string | null;
   role?: string;

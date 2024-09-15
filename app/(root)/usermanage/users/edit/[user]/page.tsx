@@ -21,7 +21,7 @@ function page({ params }: { params: { user: string } }) {
 
   // State to handle form values
   const [formData, setFormData] = useState({
-    name: "",
+    fullName: "",
     email: "",
     gender: "",
     salary: 0,
@@ -40,7 +40,7 @@ function page({ params }: { params: { user: string } }) {
     if (data) {
       const userData = data.data;
       setFormData({
-        name: userData.fullName || "",
+        fullName: userData.fullName || "",
         email: userData.email || "",
         gender: userData.gender || "",
         salary: userData.salary || 0,
@@ -127,7 +127,7 @@ function page({ params }: { params: { user: string } }) {
         {/* User Profile */}
         <div className="flex justify-center mb-6">
           <Image
-            src={formData.address?.pictureViewUrl || testImage}
+            src={formData?.pictureViewUrl || testImage}
             alt="User Avatar"
             width={100}
             height={100}
@@ -142,7 +142,7 @@ function page({ params }: { params: { user: string } }) {
             <input
               type="text"
               name="fullName"
-              value={formData.name}
+              value={formData.fullName}
               onChange={handleInputChange}
               className="border rounded-lg w-full px-3 py-2"
             />

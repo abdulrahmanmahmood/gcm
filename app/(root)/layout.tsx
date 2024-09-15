@@ -25,7 +25,7 @@ export default function RootLayout({
   console.log("cookeis in root layout", name, token);
 
   return (
-    <div className="h-screen flex flex-row">
+    <div className=" flex flex-row overflow-auto">
       {/* LEFT */}
       <div className="lg:w-[18%] md:w-[15%] bg-white flex-col pt-[20px] h-full overflow-hidden">
         <Image
@@ -38,7 +38,7 @@ export default function RootLayout({
         <Drawer />
       </div>
       {/* RIGHT */}
-      <div className="w-[100%] lg:w-[82%] md:w-[85%] overflow-hidden h-screen">
+      <div className="w-[100%] lg:w-[82%] md:w-[85%] overflow-hidden pb-3">
         <Navbar
           email="ahmedmohamedabdellhady@gmail.com"
           name={`${name ? name : null}`}

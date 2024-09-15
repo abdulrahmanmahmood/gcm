@@ -1,61 +1,41 @@
 import React from "react";
-import {
-  TiArrowUnsorted,
-  TiArrowSortedDown,
-  TiArrowSortedUp,
-} from "react-icons/ti";
+import { TiArrowUnsorted, TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
+
 interface Props {
-  sortBy: string[]; // Updated to array of strings
+  sortBy: string;
+  sortDirection: string;
   onSort: (column: string) => void;
 }
-
-const CleintManagmentTableHeader = ({ sortBy, onSort }: Props) => {
+const ProjectsManagementTableHeader: React.FC<Props> = ({ sortBy, sortDirection, onSort }) => {
   const getSortIcon = (column: string) => {
-    // Check if the column is being sorted
-    const currentSort = sortBy.find((sort) => sort.startsWith(column));
-    if (currentSort) {
-      return currentSort.endsWith("ASC") ? (
-        <TiArrowSortedUp className="inline-block ml-2" />
-      ) : (
-        <TiArrowSortedDown className="inline-block ml-2" />
-      );
+    if (sortBy === column) {
+      return sortDirection === "asc" ? <TiArrowSortedUp className="inline-block ml-2" /> : <TiArrowSortedDown className="inline-block ml-2" />;
     }
     return <TiArrowUnsorted className="inline-block ml-2" />;
   };
+
   return (
     <thead className="bg-gray-50 text-petrol">
       <tr>
         {/* CheckBox Input */}
-        <th className="px-6 py-4 whitespace-nowrap">
-          <div className="px-6 py-4 font-medium text-gray-900">
-            <div className="flex items-center">
-              {/* <input
-            id="checkbox-all"
-            type="checkbox"
-            className="w-4 h-4 text-petrol bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-          /> */}
-              {/* <label htmlFor="checkbox-all" className="sr-only">
-            checkbox
-          </label> */}
-            </div>
-          </div>
-        </th>
+        <th className="px-6 py-4 whitespace-nowrap"></th>
 
-        {/* Full Name  */}
+        {/* Full Name */}
         <th
           scope="col"
           className="px-6 py-4 font-medium text-petrol text-xl cursor-pointer"
           onClick={() => onSort("fullName")}
         >
-          Full Name {getSortIcon("FULL_NAME")}
+          Full Name {getSortIcon("fullName")}
         </th>
+
         {/* ID */}
         <th
           scope="col"
           className="px-6 py-4 font-medium text-petrol text-xl cursor-pointer"
           onClick={() => onSort("id")}
         >
-          ID {getSortIcon("ID")}
+          ID {getSortIcon("id")}
         </th>
 
         {/* Gender */}
@@ -64,12 +44,16 @@ const CleintManagmentTableHeader = ({ sortBy, onSort }: Props) => {
           className="px-6 py-4 font-medium text-petrol text-xl cursor-pointer"
           onClick={() => onSort("gender")}
         >
-          Gender {getSortIcon("GENDER")}
+          Gender {getSortIcon("gender")}
         </th>
 
-        {/* Company Name */}
-        <th scope="col" className="px-6 py-4 font-medium text-petrol text-xl">
-          Company Name
+        {/* Salary */}
+        <th
+          scope="col"
+          className="px-6 py-4 font-medium text-petrol text-xl cursor-pointer"
+          onClick={() => onSort("salary")}
+        >
+          Salary {getSortIcon("salary")}
         </th>
 
         {/* Role */}
@@ -78,7 +62,7 @@ const CleintManagmentTableHeader = ({ sortBy, onSort }: Props) => {
           className="px-6 py-4 font-medium text-petrol text-xl cursor-pointer"
           onClick={() => onSort("role")}
         >
-          Role {getSortIcon("ROLE")}
+          Role {getSortIcon("role")}
         </th>
 
         {/* Registration Date */}
@@ -87,7 +71,7 @@ const CleintManagmentTableHeader = ({ sortBy, onSort }: Props) => {
           className="px-6 py-4 font-medium text-petrol text-xl cursor-pointer"
           onClick={() => onSort("registrationDate")}
         >
-          Registration Date {getSortIcon("CREATED_DATE")}
+          Registration Date {getSortIcon("registrationDate")}
         </th>
 
         {/* Enabled */}
@@ -96,7 +80,7 @@ const CleintManagmentTableHeader = ({ sortBy, onSort }: Props) => {
           className="px-6 py-4 font-medium text-petrol text-xl cursor-pointer"
           onClick={() => onSort("enabled")}
         >
-          Enabled {getSortIcon("ENABLED")}
+          Enabled {getSortIcon("enabled")}
         </th>
 
         {/* Locked */}
@@ -105,17 +89,16 @@ const CleintManagmentTableHeader = ({ sortBy, onSort }: Props) => {
           className="px-6 py-4 font-medium text-petrol text-xl cursor-pointer"
           onClick={() => onSort("locked")}
         >
-          Locked {getSortIcon("LOCKED")}
+          Locked {getSortIcon("locked")}
         </th>
 
         {/* Action */}
         <th scope="col" className="px-6 py-4 font-medium text-petrol text-xl">
           Action
         </th>
-        <th scope="col" className="px-6 py-4 font-medium text-petrol text-xl" />
       </tr>
     </thead>
   );
 };
 
-export default CleintManagmentTableHeader;
+export default ProjectsManagementTableHeader
