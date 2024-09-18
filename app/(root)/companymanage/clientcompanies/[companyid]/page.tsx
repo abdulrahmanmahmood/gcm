@@ -1,6 +1,7 @@
 "use client";
 import CCDetailsSection from "@/app/_components/UI/Compaines/CCDetailsSection";
 import CompanyViewCardHeader from "@/app/_components/UI/Compaines/CompanyViewCardHeader";
+import TitleAddAndEdit from "@/app/_components/UI/TitleAddAndEdit";
 import UserCardAddressSection from "@/app/_components/UI/UserCardAddressSection";
 import {
   fetchCCompanyData,
@@ -13,11 +14,7 @@ const CompanyProfilePage = ({ params }: { params: { companyid: number } }) => {
   const companyId = params.companyid;
 
   // Fetch company data using react-query
-  const {
-    data: companyData,
-    isLoading,
-    error,
-  } = useQuery<ICompany>({
+  const { data, isLoading, error } = useQuery<ICompany>({
     queryKey: ["companyData", companyId],
     queryFn: () => fetchCCompanyData(companyId),
   });
@@ -25,16 +22,19 @@ const CompanyProfilePage = ({ params }: { params: { companyid: number } }) => {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading company data.</div>;
 
+  const companyData = data.data;
+
   return (
     <div className="container mx-auto p-8">
       <div className="container mx-auto p-8 min-h-screen overflow-y-auto pb-20">
+        <TitleAddAndEdit title="" />
         <CompanyViewCardHeader
           type={companyData?.type}
           email=""
           enabled
           industry={companyData?.industry}
           id={companyData?.id}
-          url={`/companymanage/subercontainercompanies/edit/${companyData?.id}`}
+          url={`/companymanage/clientcompanies/edit/${companyData?.id}`}
           name={companyData?.name}
           locked
           website={companyData?.website ?? "not having website"}
@@ -44,11 +44,11 @@ const CompanyProfilePage = ({ params }: { params: { companyid: number } }) => {
 
         <CCDetailsSection
           createdDate={companyData?.createdDate}
-          headPhoneNumber={companyData?.headInfo?.phoneNumber}
+          headPhoneNumber={companyData?.headInfo?.headPhoneNumber}
           email={companyData?.email}
           faxNumber={companyData?.faxNumber}
-          headEmail={companyData?.headInfo?.email}
-          headName={companyData?.headInfo?.name}
+          headEmail={companyData?.headInfo?.headEmail}
+          headName={companyData?.headInfo?.headFullName}
           modifiedDate={companyData?.modifiedDate}
         />
         <UserCardAddressSection

@@ -17,14 +17,7 @@ function UserManagementTable() {
   const [sortBy, setSortBy] = useState<string[]>(["ID_ASC"]); // Default sort by ID ascending
 
   const { data, error, isLoading, refetch } = useQuery<UsersAxiosResponse>({
-    queryKey: [
-      "users",
-      pageNumber,
-      pageSize,
-      searchKeyword,
-      filters,
-      sortBy,
-    ],
+    queryKey: ["users", pageNumber, pageSize, searchKeyword, filters, sortBy],
     queryFn: () =>
       fetchUsers(pageNumber, pageSize, searchKeyword, filters, sortBy),
     placeholderData: keepPreviousData,
@@ -75,7 +68,9 @@ function UserManagementTable() {
       // If sorting by the same column, toggle between ASC and DESC
       const newSortDirection = currentSort.endsWith("ASC") ? "DESC" : "ASC";
       newSortArray = newSortArray.map((sort) =>
-        sort.startsWith(mappedColumn) ? `${mappedColumn}_${newSortDirection}` : sort
+        sort.startsWith(mappedColumn)
+          ? `${mappedColumn}_${newSortDirection}`
+          : sort
       );
     } else {
       // If sorting by a new column, add it to the array
@@ -104,14 +99,19 @@ function UserManagementTable() {
     <>
       <UserManagementNav onSearch={handleSearch} />
       <UserManagementHeader />
+      <div className="flex flex-row gap-5 justify-end mx-4 my-4">
+        <button className="bg-greening text-white w-36 py-2 px-3 rounded-lg">
+          Unlock
+        </button>
+        <button className="bg-redd text-white w-36 py-2 px-3 rounded-lg">
+          Lock
+        </button>
+      </div>
 
       {/* component */}
       <div className="overflow-auto h-[72vh] shadow-md p-1">
         <table className="w-full border-collapse bg-white  text-sm text-petrol text-center text-nowrap ">
-          <UserManagmentTableHeader
-            sortBy={sortBy}
-            onSort={handleSort}
-          />
+          <UserManagmentTableHeader sortBy={sortBy} onSort={handleSort} />
           <tbody className="divide-y divide-gray-100 border-t border-gray-100  max-h-[60vh]">
             {data?.content?.map((user: User) => (
               <UserManagementBodyRow key={user.id} user={user} />

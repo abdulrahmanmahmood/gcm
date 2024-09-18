@@ -9,6 +9,7 @@ import { fetchClient } from "@/app/_utils/fetchClient";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
+import TitleAddAndEdit from "@/app/_components/UI/TitleAddAndEdit";
 
 interface IClientForm {
   fullName: string;
@@ -115,8 +116,8 @@ const EditClientPage = ({ params }: { params: { client: string } }) => {
   }
 
   return (
-    <div className="flex flex-col items-center py-10 px-5">
-      <h1 className="text-3xl font-semibold mb-8">Edit Client</h1>
+    <div className="flex flex-col items-center py-10 w-full">
+      <TitleAddAndEdit title="Edit client" />
 
       {/* Image Upload */}
       <div className="relative">
@@ -124,8 +125,8 @@ const EditClientPage = ({ params }: { params: { client: string } }) => {
           <Image
             src={imagePreview || placeholderImage}
             alt="Client Avatar"
-            width={150}
-            height={150}
+            width={250}
+            height={250}
             className="rounded-full object-cover"
           />
           <div className="absolute bottom-2 right-2 bg-white rounded-full p-1 border border-gray-300">
@@ -156,11 +157,13 @@ const EditClientPage = ({ params }: { params: { client: string } }) => {
       {/* Form */}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full max-w-md mt-8 space-y-6"
+        className="w-full px-10  mt-8 space-y-6"
       >
         <div className="grid grid-cols-2 gap-6">
           <div>
-            <label className="block text-gray-700">Full Name</label>
+            <label className="block text-petrol text-xl font-semibold m-1">
+              Full Name
+            </label>
             <input
               type="text"
               {...register("fullName", { required: true })}
@@ -172,7 +175,9 @@ const EditClientPage = ({ params }: { params: { client: string } }) => {
           </div>
 
           <div>
-            <label className="block text-gray-700">Email</label>
+            <label className="block text-petrol text-xl font-semibold m-1">
+              Email
+            </label>
             <input
               type="email"
               {...register("email", { required: true })}
@@ -184,7 +189,9 @@ const EditClientPage = ({ params }: { params: { client: string } }) => {
 
         {/* Gender Radio Buttons */}
         <div className="mt-6">
-          <label className="block text-gray-700">Gender</label>
+          <label className="block text-petrol text-xl font-semibold m-1">
+            Gender
+          </label>
           <div className="flex items-center space-x-4 mt-2">
             <label>
               <input
@@ -192,6 +199,7 @@ const EditClientPage = ({ params }: { params: { client: string } }) => {
                 value="MALE"
                 {...register("gender", { required: true })}
                 checked={watch("gender") === "MALE"}
+                className="size-5 bg-petrol "
               />{" "}
               Male
             </label>
@@ -201,6 +209,7 @@ const EditClientPage = ({ params }: { params: { client: string } }) => {
                 value="FEMALE"
                 {...register("gender", { required: true })}
                 checked={watch("gender") === "FEMALE"}
+                className="size-5 bg-petrol "
               />{" "}
               Female
             </label>
@@ -208,12 +217,14 @@ const EditClientPage = ({ params }: { params: { client: string } }) => {
           {errors.gender && <p className="text-red-500">Gender is required</p>}
         </div>
 
+        <div className="text-center">
         <button
           type="submit"
-          className="mt-6 w-full py-3 bg-petrol text-white font-semibold rounded-lg"
+          className="mt-10 w-[40%] mx-auto py-3 bg-petrol text-white font-semibold rounded-lg"
         >
           Save
         </button>
+        </div>
       </form>
       <ToastContainer />
     </div>

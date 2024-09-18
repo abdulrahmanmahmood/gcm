@@ -106,7 +106,7 @@ const CleintManagementTable = () => {
       <div className="overflow-auto h-[70vh] shadow-md p-1">
         <table className="w-full border-collapse bg-white  text-sm text-petrol text-center text-nowrap ">
           <CleintManagmentTableHeader sortBy={sortBy} onSort={handleSort} />
-          <tbody className="divide-y divide-gray-100 border-t border-gray-100 h-[60vh]">
+          <tbody className="divide-y divide-gray-100 border-t border-gray-100 max-h-[60vh]">
             {data?.content?.map((client: Cleint) => (
               <CleintManagementBodyRow key={client.id} user={client} />
             ))}

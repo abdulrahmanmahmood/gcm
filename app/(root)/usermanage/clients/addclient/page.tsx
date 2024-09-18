@@ -5,7 +5,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { getCookie } from "cookies-next";
 import Image from "next/image";
 import placeholderImage from "../../../../../public/healthicons_ui-user-profile.png";
-import sendMixedContentRequest from "@/app/_utils/sendMixedContentRequest";
 import { addClient } from "@/app/_utils/addClient"; // Mutation function
 import { getAllCompanies } from "@/app/_utils/company/clienCompany/getAll";
 import { toast, ToastContainer } from "react-toastify";
@@ -106,8 +105,8 @@ const AddClientPage = () => {
               <Image
                 src={imagePreview || placeholderImage}
                 alt="User Avatar"
-                width={150}
-                height={150}
+                width={250}
+                height={250}
                 className="rounded-full"
               />
             </label>

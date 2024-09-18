@@ -71,7 +71,7 @@ const ClientManagementNav = ({ onSearch }: IProps) => {
           Filter
         </div>
         <Link
-          href="/usermanage/users/adduser"
+          href="/usermanage/clients/addclient"
           className="w-36 text-center rounded-lg text-white py-3 bg-petrol cursor-pointer"
         >
           Add New

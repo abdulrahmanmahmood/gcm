@@ -2,35 +2,38 @@ import axios from "axios";
 import { getCookie } from "cookies-next";
 
 export interface ICompany {
-  id: number;
-  name: string;
-  email: string;
-  faxNumber: string | null;
-  headInfo: {
+  data: {
+    id: number;
     name: string;
     email: string;
-    phoneNumber: string;
-  } | null;
-  createdDate: string;
-  modifiedDate: string | null;
-  industry: string | null;
-  status: "ACTIVE" | "INACTIVE" | "CLOSED"; // Status types
-  type: "CLIENT" | "PARTNER" | "SUBCONTRACTOR";
-  website: string | null;
-  logoViewUrl: string | null;
-  address: {
-    street: string;
-    city: string;
-    zipCode: string;
-    state: string;
-    country: string;
+    website: string | null;
+    faxNumber: string | null;
+    industry: string | null;
+    headInfo: {
+      headFullName: string;
+      headEmail: string;
+      headPhoneNumber: string;
+    } | null;
+    status: "ACTIVE" | "INACTIVE" | "CLOSED"; // Status types
+    type: "CLIENT" | "PARTNER" | "SUBCONTRACTOR";
+    logoExists: boolean;
+    logo: string | null;
+    createdDate: string;
+    modifiedDate: string | null;
+    address: {
+      street: string;
+      city: string;
+      zipCode: string;
+      state: string;
+      country: string;
+    };
+    branches: Array<{
+      name: string;
+      phoneNumber: string;
+      address: string;
+      locationUrl: string;
+    }> | null;
   };
-  branches: Array<{
-    name: string;
-    phoneNumber: string;
-    address: string;
-    locationUrl: string;
-  }> | null;
 }
 
 export const fetchCCompanyData = async (

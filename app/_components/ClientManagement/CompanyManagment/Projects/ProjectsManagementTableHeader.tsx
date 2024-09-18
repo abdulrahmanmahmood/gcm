@@ -1,15 +1,23 @@
 import React from "react";
-import { TiArrowUnsorted, TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
-
+import {
+  TiArrowUnsorted,
+  TiArrowSortedDown,
+  TiArrowSortedUp,
+} from "react-icons/ti";
 interface Props {
-  sortBy: string;
-  sortDirection: string;
+  sortBy: string[]; // Updated to array of strings
   onSort: (column: string) => void;
 }
-const ProjectsManagementTableHeader: React.FC<Props> = ({ sortBy, sortDirection, onSort }) => {
+const ProjectsManagementTableHeader: React.FC<Props> = ({ sortBy, onSort }) => {
   const getSortIcon = (column: string) => {
-    if (sortBy === column) {
-      return sortDirection === "asc" ? <TiArrowSortedUp className="inline-block ml-2" /> : <TiArrowSortedDown className="inline-block ml-2" />;
+    // Check if the column is being sorted
+    const currentSort = sortBy.find((sort) => sort.startsWith(column));
+    if (currentSort) {
+      return currentSort.endsWith("ASC") ? (
+        <TiArrowSortedUp className="inline-block ml-2" />
+      ) : (
+        <TiArrowSortedDown className="inline-block ml-2" />
+      );
     }
     return <TiArrowUnsorted className="inline-block ml-2" />;
   };
@@ -24,9 +32,10 @@ const ProjectsManagementTableHeader: React.FC<Props> = ({ sortBy, sortDirection,
         <th
           scope="col"
           className="px-6 py-4 font-medium text-petrol text-xl cursor-pointer"
-          onClick={() => onSort("fullName")}
+          // onClick={() => onSort("companyName")}
         >
-          Full Name {getSortIcon("fullName")}
+          Company Name
+          {/* {getSortIcon("COMPANY_NAME")} */}
         </th>
 
         {/* ID */}
@@ -35,61 +44,47 @@ const ProjectsManagementTableHeader: React.FC<Props> = ({ sortBy, sortDirection,
           className="px-6 py-4 font-medium text-petrol text-xl cursor-pointer"
           onClick={() => onSort("id")}
         >
-          ID {getSortIcon("id")}
+          ID {getSortIcon("ID")}
         </th>
 
         {/* Gender */}
         <th
           scope="col"
           className="px-6 py-4 font-medium text-petrol text-xl cursor-pointer"
-          onClick={() => onSort("gender")}
+          // onClick={() => onSort("projectName")}
         >
-          Gender {getSortIcon("gender")}
+          Project Name
+          {/* {getSortIcon("PROJECTNAME")} */}
         </th>
 
         {/* Salary */}
         <th
           scope="col"
           className="px-6 py-4 font-medium text-petrol text-xl cursor-pointer"
-          onClick={() => onSort("salary")}
+          // onClick={() => onSort("totalCost")}
         >
-          Salary {getSortIcon("salary")}
+          Total Cost
+          {/* {getSortIcon("TOTALCOST")} */}
         </th>
 
         {/* Role */}
         <th
           scope="col"
           className="px-6 py-4 font-medium text-petrol text-xl cursor-pointer"
-          onClick={() => onSort("role")}
+          // onClick={() => onSort("remainCost")}
         >
-          Role {getSortIcon("role")}
+          Remain Cost
+          {/* {getSortIcon("REMAINCOST")} */}
         </th>
 
         {/* Registration Date */}
         <th
           scope="col"
           className="px-6 py-4 font-medium text-petrol text-xl cursor-pointer"
-          onClick={() => onSort("registrationDate")}
+          onClick={() => onSort("startDate")}
         >
-          Registration Date {getSortIcon("registrationDate")}
-        </th>
-
-        {/* Enabled */}
-        <th
-          scope="col"
-          className="px-6 py-4 font-medium text-petrol text-xl cursor-pointer"
-          onClick={() => onSort("enabled")}
-        >
-          Enabled {getSortIcon("enabled")}
-        </th>
-
-        {/* Locked */}
-        <th
-          scope="col"
-          className="px-6 py-4 font-medium text-petrol text-xl cursor-pointer"
-          onClick={() => onSort("locked")}
-        >
-          Locked {getSortIcon("locked")}
+          Start Date
+          {/* {getSortIcon("START_DATE")} */}
         </th>
 
         {/* Action */}
@@ -101,4 +96,4 @@ const ProjectsManagementTableHeader: React.FC<Props> = ({ sortBy, sortDirection,
   );
 };
 
-export default ProjectsManagementTableHeader
+export default ProjectsManagementTableHeader;

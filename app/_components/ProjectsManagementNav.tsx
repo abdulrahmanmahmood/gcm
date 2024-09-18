@@ -4,29 +4,21 @@ import React, { useState } from "react";
 interface IProps {
   onSearch: (keyword: string, filters: any) => void;
 }
-const ProjectsManagementNav= ({ onSearch }: IProps) => {
+const ProjectsManagementNav = ({ onSearch }: IProps) => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [locked, setLocked] = useState<string | boolean>(""); // Empty string for unset state
-  const [enabled, setEnabled] = useState<string | boolean>("");
-  const [gender, setGender] = useState<string>("");
-  const [authorities, setAuthorities] = useState<string>("");
-  const [registrationDate, setRegistrationDate] = useState<string>("");
-  const [birthDate, setBirthDate] = useState<string>("");
-  const [salary, setSalary] = useState<number | "">("");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
+  const [company, setCompany] = useState<string>("");
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const keyword = e.target.value;
     setSearchKeyword(keyword);
 
     const filters = {
-      filterEnabled: enabled ?? null,
-      filterLocked: locked ?? null,
-      filterGenders: gender ? [gender] : null,
-      filterAuthorities: authorities ? [authorities] : null,
-      filterRegistrationDate: registrationDate ?? null,
-      filterBirthDate: birthDate ?? null,
-      filterSalary: salary ?? null,
+      filterStartDate: startDate ?? null,
+      filterEndDate: endDate ?? null,
+      filterCompany: company ?? null,
     };
     onSearch(keyword, filters); // Call the search handler immediately when typing
   };
@@ -38,13 +30,9 @@ const ProjectsManagementNav= ({ onSearch }: IProps) => {
 
   const handleSearch = () => {
     const filters = {
-      filterEnabled: enabled ?? null,
-      filterLocked: locked ?? null,
-      filterGenders: gender ? [gender] : null,
-      filterAuthorities: authorities ? [authorities] : null,
-      filterRegistrationDate: registrationDate ?? null,
-      filterBirthDate: birthDate ?? null,
-      filterSalary: salary ?? null,
+      filterStartDate: startDate ?? null,
+      filterEndDate: endDate ?? null,
+      filterCompany: company ?? null,
     };
     onSearch(searchKeyword, filters);
     toggleFilterModal(); // Close the filter modal after applying filters
@@ -67,7 +55,7 @@ const ProjectsManagementNav= ({ onSearch }: IProps) => {
           Filter
         </div>
         <Link
-          href="/usermanage/users/adduser"
+          href="/companymanage/projects/addproject"
           className="w-36 text-center rounded-lg text-white py-3 bg-petrol cursor-pointer"
         >
           Add New
@@ -87,94 +75,40 @@ const ProjectsManagementNav= ({ onSearch }: IProps) => {
                 ✕
               </button>
             </div>
-            <div className="grid grid-cols-2 gap-4 text-petrol">
-              <div className="col-span-1">
-                <label className="block text-sm font-medium m-1">Locked</label>
-                <select
-                  className="select select-bordered w-full p-3 bg-white border border-gray-300 rounded-md focus:ring-petrol focus:border-petrol"
-                  value={locked.toString()} // Convert the boolean to a string
-                  onChange={(e) => setLocked(e.target.value === "true")} // Convert the string back to a boolean
-                >
-                  <option value="">Locked</option> {/* Empty option */}
-                  <option value="true">True</option>
-                  <option value="false">False</option>
-                </select>
-              </div>
-
-              <div className="col-span-1">
-                <label className="block text-sm font-medium m-1">Enable</label>
-                <select
-                  className="select select-bordered w-full p-3 bg-white border border-gray-300 rounded-md focus:ring-petrol focus:border-petrol"
-                  value={enabled.toString()} // Convert the boolean to a string
-                  onChange={(e) => setEnabled(e.target.value === "true")} // Convert the string back to a boolean
-                >
-                  <option value="">Enable</option>
-                  <option value="true">True</option>
-                  <option value="false">False</option>
-                </select>
-              </div>
-
+            <div className="grid grid-cols-1 gap-4 text-petrol">
               <div className="col-span-1">
                 <label className="block text-sm font-medium m-1">
-                  Registration Date
+                  Start Date
                 </label>
                 <input
                   type="date"
                   className="w-full border border-gray-300 rounded-md p-2 focus:ring-petrol focus:border-petrol"
-                  value={registrationDate}
-                  onChange={(e) => setRegistrationDate(e.target.value)}
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
                 />
               </div>
 
               <div className="col-span-1">
-                <label className="block text-sm font-medium m-1">Gender</label>
-                <select
-                  className="select select-bordered w-full p-3 bg-white border border-gray-300 rounded-md focus:ring-petrol focus:border-petrol"
-                  value={gender}
-                  onChange={(e) => setGender(e.target.value)}
-                >
-                  <option value="">Gender</option>
-                  <option value="MALE">Male</option>
-                  <option value="FEMALE">Female</option>
-                </select>
-              </div>
-
-              <div className="col-span-1">
                 <label className="block text-sm font-medium m-1">
-                  Birth Date
+                  End Date
                 </label>
                 <input
                   type="date"
                   className="w-full border border-gray-300 rounded-md p-2 focus:ring-petrol focus:border-petrol"
-                  value={birthDate}
-                  onChange={(e) => setBirthDate(e.target.value)}
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
                 />
               </div>
 
               <div className="col-span-1">
-                <label className="block text-sm font-medium m-1">Salary</label>
+                <label className="block text-sm font-medium m-1">Company</label>
                 <input
-                  type="number"
+                  type="text"
                   className="w-full border border-gray-300 rounded-md p-2 focus:ring-petrol focus:border-petrol"
-                  placeholder="Enter Salary"
-                  value={salary}
-                  onChange={(e) => setSalary(parseFloat(e.target.value))}
+                  placeholder="Enter company"
+                  value={company}
+                  onChange={(e) => setCompany(e.target.value)}
                 />
-              </div>
-
-              <div className="col-span-2">
-                <label className="block text-sm font-medium m-1">
-                  Authorities
-                </label>
-                <select
-                  className="select select-bordered w-full p-3 bg-white border border-gray-300 rounded-md focus:ring-petrol focus:border-petrol"
-                  value={authorities}
-                  onChange={(e) => setAuthorities(e.target.value)}
-                >
-                  <option value="">Authorities</option>
-                  <option value="ADMIN">Admin</option>
-                  <option value="SUPER_ADMIN">Super Admin</option>
-                </select>
               </div>
             </div>
 
@@ -200,4 +134,4 @@ const ProjectsManagementNav= ({ onSearch }: IProps) => {
   );
 };
 
-export default  ProjectsManagementNav
+export default ProjectsManagementNav;

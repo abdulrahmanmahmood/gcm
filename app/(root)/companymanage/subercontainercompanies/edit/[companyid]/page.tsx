@@ -128,7 +128,6 @@ const EditCompanyPage = ({ params }: { params: { companyid: string } }) => {
       });
     }
   }, [companyData, reset]);
-  
 
   // Mutation to handle the update request
   const mutation = useMutation({
@@ -149,7 +148,6 @@ const EditCompanyPage = ({ params }: { params: { companyid: string } }) => {
   const onSubmit = (data: any) => {
     mutation.mutate(data);
   };
-
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading company data</div>;

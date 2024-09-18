@@ -8,6 +8,7 @@ import { updateUser } from "@/app/_utils/UpdateUser";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
+import { IoIosArrowDropleftCircle } from "react-icons/io";
 
 function page({ params }: { params: { user: string } }) {
   const userId = parseInt(params.user, 10); // Convert the user ID from string to number
@@ -115,7 +116,10 @@ function page({ params }: { params: { user: string } }) {
     <form onSubmit={handleSubmit}>
       <div className="relative flex flex-col w-full min-w-0 mb-6 break-words border border-dashed bg-clip-border rounded-2xl border-stone-200 bg-light/30 draggable p-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold">Edit a User</h2>
+          <h2 className="text-2xl text-petrol items-center">
+            <IoIosArrowDropleftCircle className="text-petrol text-4xl my-auto inline-block mr-5" />
+            Edit a User
+          </h2>
           <button
             type="submit"
             className="bg-petrol text-white py-2 px-4 rounded-lg"

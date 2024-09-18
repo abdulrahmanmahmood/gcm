@@ -7,7 +7,6 @@ import Image from "next/image";
 import placeholderImage from "../../../../../public/healthicons_ui-user-profile.png";
 import { getCookie } from "cookies-next";
 import axios from "axios";
-import sendMixedContentRequest from "@/app/_utils/sendMixedContentRequest";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";

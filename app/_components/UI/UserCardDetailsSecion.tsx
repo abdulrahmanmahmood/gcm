@@ -14,7 +14,7 @@ const UserCardDetailsSection = ({
   modifiedDate = "N/A", // Fallback to "N/A" if modifiedDate is undefined
 }: IProps) => {
   return (
-    <div className="px-9 pt-5 pb-5 flex-auto bg-transparent">
+    <div className="px-9 my-10 py-5 pb-5 flex-auto bg-transparent">
       <div className="flex flex-col space-y-4">
         <div className="flex justify-between w-[50%]">
           <p className="text-petrol font-medium">Phone Number</p>

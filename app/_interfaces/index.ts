@@ -61,6 +61,15 @@ export interface Cleint {
   pictureExists: boolean;
   getPictureDownloadUrl: string | null;
   getPictureViewUrl: string | null;
+  picture?: {
+    data: string;
+    id: string;
+    basename: string;
+    extension: string;
+    contentType: string;
+    size: number;
+    uploadDate: string;
+  };
   role?: string;
   company?: {
     name: string;
@@ -166,6 +175,41 @@ export interface Company {
 
 export interface CompanyAxiosResponse {
   content: Company[] | any;
+  emptyPage: boolean;
+  firstPage: boolean;
+  lastPage: boolean;
+  pageElementCount: number;
+  pageNumber: number;
+  pageSize: number;
+  sortedPage: boolean;
+  totalPagesCount: number;
+  totalElementsCount: number;
+}
+
+// //////////////////Projects//////////////////
+
+export interface Project {
+  id: number;
+  name: string;
+  company: {
+    id: number;
+    name: string;
+    logoExists: boolean;
+    logo: string | null;
+  };
+  location: {
+    latitude: number;
+    longitude: number;
+  };
+  status: "PENDING" | "COMPLETED" | "IN_PROGRESS"; // Enum-like values for status
+  totalCost: number;
+  remainCost: number;
+  startDate: string; // ISO Date format as string
+  endDate: string; // ISO Date format as string
+}
+
+export interface ProjectsAxiosResponse {
+  content: Project[] | any;
   emptyPage: boolean;
   firstPage: boolean;
   lastPage: boolean;

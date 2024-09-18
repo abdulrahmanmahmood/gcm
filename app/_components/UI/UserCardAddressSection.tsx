@@ -14,11 +14,13 @@ const UserCardAddressSection = ({
   country,
 }: IProps) => {
   return (
-    <div className="px-9 pt-5 pb-5 flex-auto bg-transparent">
+    <div className="px-9 py-5 my-10 pb-5 flex-auto bg-transparent">
       <div className="flex flex-col">
-        <div className="bg-petrol text-white text-center py-3 rounded-lg mb-4">
+        <div className="bg-petrol text-white text-center py-3 rounded-lg my-15">
           Address
         </div>
+      <div className="w-full my-5" />
+
         <div className="px-2 pt-5 pb-5 flex-auto bg-transparent">
           <div className="flex flex-col space-y-4">
             <div className="flex justify-between w-[50%]">

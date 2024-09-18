@@ -4,7 +4,6 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import Pagination from "@/app/_utils/Pagination";
 import CompaniesManagementNav from "./CompaniesManagementNav";
 import CMHeader from "./CMHeader";
-import { fetchCompanies } from "@/app/_utils/company/fetchCompanies";
 import { Company, CompanyAxiosResponse } from "@/app/_interfaces";
 import CMTHeader from "./CMTHeader";
 import CMBRow from "./CMBRow";
@@ -14,11 +13,19 @@ function SCMTable() {
   const [pageNumber, setPageNumber] = useState(0); // Track the current page
   const [pageSize, setPageSize] = useState(10); // Track the page size
   const [searchKeyword, setSearchKeyword] = useState(""); // Track the search keyword
+  const [filters, setFilters] = useState<any>({}); // Store the filters here
+  const [sortBy, setSortBy] = useState<string[]>(["ID_ASC"]); // Default sort by ID ascending
 
   const { data, error, isLoading, refetch } = useQuery<CompanyAxiosResponse>({
-    queryKey: ["users", pageNumber, pageSize, searchKeyword],
+    queryKey: ["users", pageNumber, pageSize, searchKeyword, filters, sortBy],
     queryFn: () =>
-      fetchSuberContainerCompanies(pageNumber, pageSize, searchKeyword),
+      fetchSuberContainerCompanies(
+        pageNumber,
+        pageSize,
+        searchKeyword,
+        filters,
+        sortBy
+      ),
     placeholderData: keepPreviousData,
     staleTime: 5 * 60 * 1000,
   });
@@ -43,6 +50,41 @@ function SCMTable() {
     setSearchKeyword(keyword);
     setPageNumber(0); // Reset to first page when new search is triggered
   };
+  // Sort Mapping
+  const sortMapping: { [key: string]: string } = {
+    Name: "NAME",
+    id: "ID",
+    status: "STATUS",
+    industry: "INDUSTRY",
+    email: "EMAIL",
+    registrationDate: "CREATED_DATE",
+    // enabled: "ENABLED",
+    // locked: "LOCKED",
+  };
+
+  // Handle Sort Function
+  const handleSort = (column: string) => {
+    const mappedColumn = sortMapping[column];
+    const currentSort = sortBy.find((sort) => sort.startsWith(mappedColumn));
+
+    let newSortArray = [...sortBy];
+
+    if (currentSort) {
+      // If sorting by the same column, toggle between ASC and DESC
+      const newSortDirection = currentSort.endsWith("ASC") ? "DESC" : "ASC";
+      newSortArray = newSortArray.map((sort) =>
+        sort.startsWith(mappedColumn)
+          ? `${mappedColumn}_${newSortDirection}`
+          : sort
+      );
+    } else {
+      // If sorting by a new column, add it to the array
+      newSortArray = [`${mappedColumn}_ASC`, ...newSortArray];
+    }
+
+    setSortBy(newSortArray);
+    setPageNumber(0); // Reset to first page when new sorting is triggered
+  };
 
   //////////////// pagination ///////////////////
   // Function to handle page changes
@@ -66,7 +108,7 @@ function SCMTable() {
       {/* component */}
       <div className="overflow-auto h-[72vh] shadow-md p-1">
         <table className="w-full border-collapse bg-white  text-sm text-petrol text-center text-nowrap ">
-          <CMTHeader />
+          <CMTHeader sortBy={sortBy} onSort={handleSort} />
           <tbody className="divide-y divide-gray-100 border-t border-gray-100  max-h-[60vh]">
             {data?.content?.map((user: Company) => (
               <CMBRow

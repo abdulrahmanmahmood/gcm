@@ -14,7 +14,7 @@ interface IProps {
 const Welcome = ({ title, icon, text1, text2, url }: IProps) => {
   return (
     <Link href={`${url}`}>
-      <div className="w-80   mx-5 my-4 ">
+      <div className="w-80   mx-5 my-4 h-[340px]">
         <div className="w-full h-[80%] bg-[#E8E8E8] py-3">
           <div className="h-40 w-40 rounded-full bg-white mx-auto py-7">
             {/* <FaUsers className="text-petrol text-[100px] text-center mx-auto " /> */}

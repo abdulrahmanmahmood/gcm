@@ -2,6 +2,8 @@ import Image, { StaticImageData } from "next/image";
 import React from "react";
 import testImage from "../../../public/logo.jpg";
 import Link from "next/link";
+import { IoIosArrowDropleftCircle } from "react-icons/io";
+import { FaEdit } from "react-icons/fa";
 interface Iprops {
   image?: string | StaticImageData;
   email: string;
@@ -26,7 +28,13 @@ const UserCardHeader = ({
   url,
 }: Iprops) => {
   return (
-    <div className="w-full px-9 pt-9 flex-auto min-h-[70px] pb-0 bg-transparent">
+    <div className="w-full px-9 pt-4 flex-auto min-h-[70px] pb-0 bg-transparent my-5 py-10">
+      <Link href={"/usermanage/clients"}>
+        <IoIosArrowDropleftCircle
+          className="text-petrol text-5xl cursor-pointer mb-7"
+          // onClick={handleBackClick}
+        />
+      </Link>
       <div className="flex flex-wrap mb-6 xl:flex-nowrap">
         <div className="mb-5 mr-5">
           <div className="relative inline-block shrink-0 rounded-2xl">
@@ -71,8 +79,9 @@ const UserCardHeader = ({
             <div className="flex flex-wrap my-auto">
               <Link
                 href={url}
-                className="inline-block px-6 bg-petrol text-white py-1.5 mr-3 text-base font-medium leading-normal text-center align-middle transition-colors duration-150 ease-in-out border-0 shadow-none cursor-pointer rounded-xl text-muted bg-light border-light hover:bg-light-dark active:bg-light-dark focus:bg-light-dark"
+                className="inline-block px-6 bg-petrol text-white py-1.5 mr-3 text-base font-medium leading-normal text-center align-middle transition-colors duration-150 ease-in-out border-0 shadow-none cursor-pointer rounded-lg text-muted bg-light border-light hover:bg-light-dark active:bg-light-dark focus:bg-light-dark"
               >
+                <FaEdit className="mr-2 inline-block my-auto text-xl" />
                 Edit
               </Link>
             </div>
@@ -94,11 +103,21 @@ const UserCardHeader = ({
           <div className="px-9  justify-between bg-transparent my-3 ">
             <div className="flex items-center space-x-14">
               <span className="mr-2 text-petrol">Enabled</span>{" "}
-              <span className="text-success text-greening">●</span>{" "}
-              {enabled == true ? "True" : "False"}
+              <span
+                className={` ${
+                  enabled == true ? "text-greening" : "text-redd"
+                }`}
+              >
+                ●
+              </span>{" "}
+              {enabled == true ? "_True" : "_False"}
               <span className="mr-2 text-petrol">Locked</span>{" "}
-              <span className="text-success text-greening">●</span>{" "}
-              {locked == true ? "True" : "False"}
+              <span
+                className={` ${locked == true ? "text-greening" : "text-redd"}`}
+              >
+                ●
+              </span>{" "}
+              {locked == true ? "_True" : "_False"}
             </div>
           </div>
         </div>

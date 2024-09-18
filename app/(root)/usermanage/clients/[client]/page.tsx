@@ -25,11 +25,8 @@ const ClientPage = ({ params }: { params: { client: string } }) => {
   console.log("client data", clientData);
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center px-4 py-5 bg-gray-50">
+    <div className="w-full min-h-screen flex flex-col items-center   bg-gray-50">
       {/* Back Button */}
-      <div className="w-full text-left mb-4">
-        <IoIosArrowDropleftCircle className="text-5xl text-petrol cursor-pointer" />
-      </div>
 
       {/* Client Info Card */}
       <div className="w-full  flex flex-col items-center bg-white  rounded-lg shadow-md">
@@ -46,9 +43,9 @@ const ClientPage = ({ params }: { params: { client: string } }) => {
           url={`/usermanage/clients/edit/${clientData.id}`}
         />
 
-        <div className="border border-1 w-full">
+        <div className=" w-full py-5 ">
           {/* Dates Section */}
-          <div className="w-full flex flex-col px-5 space-y-5 pt-5 justify-around text-gray-600 text-base mb-6">
+          <div className="w-full  border-b py-10  flex flex-col px-10 space-y-5 pt-5 justify-around text-gray-600 text-base mb-6">
             <p>
               <span className="font-semibold text-petrol">Created Date: </span>
               {new Date(clientData.createdDate).toLocaleDateString("en-GB")}
@@ -62,15 +59,15 @@ const ClientPage = ({ params }: { params: { client: string } }) => {
           </div>
 
           {/* Company Logo */}
-          <div className="flex flex-row items-center space-x-6 w-full px-5">
+          <div className="flex flex-row items-center space-x-6 w-full px-10">
             <Image
               src={testImage} // Replace with actual company logo if available
               alt="Company logo"
-              width={150}
-              height={150}
-              className="mb-4"
+              width={200}
+              height={200}
+              className="mb-4 mx-10"
             />
-            <h2 className="text-xl font-bold text-petrol">
+            <h2 className="text-2xl font-bold text-petrol">
               {clientData.companyName || "Company Name"}
             </h2>
           </div>

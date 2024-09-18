@@ -1,6 +1,27 @@
 import React from "react";
+import {
+  TiArrowUnsorted,
+  TiArrowSortedDown,
+  TiArrowSortedUp,
+} from "react-icons/ti";
+interface Props {
+  sortBy: string[]; // Updated to array of strings
+  onSort: (column: string) => void;
+}
 
-const CMTHeader = () => {
+const CMTHeader = ({ sortBy, onSort }: Props) => {
+  const getSortIcon = (column: string) => {
+    // Check if the column is being sorted
+    const currentSort = sortBy.find((sort) => sort.startsWith(column));
+    if (currentSort) {
+      return currentSort.endsWith("ASC") ? (
+        <TiArrowSortedUp className="inline-block ml-2" />
+      ) : (
+        <TiArrowSortedDown className="inline-block ml-2" />
+      );
+    }
+    return <TiArrowUnsorted className="inline-block ml-2" />;
+  };
   return (
     <thead className="bg-gray-50 text-petrol">
       <tr>
@@ -21,27 +42,47 @@ const CMTHeader = () => {
         </th>
 
         {/* Full Name  */}
-        <th scope="col" className="px-6 py-4 font-medium text-petrol text-xl">
-          Name
+        <th
+          scope="col"
+          className="px-6 py-4 font-medium text-petrol text-xl"
+          onClick={() => onSort("Name")}
+        >
+          Name {getSortIcon("NAME")}
         </th>
         {/* ID */}
-        <th scope="col" className="px-6 py-4 font-medium text-petrol text-xl">
-          ID
+        <th
+          scope="col"
+          className="px-6 py-4 font-medium text-petrol text-xl cursor-pointer"
+          onClick={() => onSort("id")}
+        >
+          ID {getSortIcon("ID")}
         </th>
 
         {/* Email */}
-        <th scope="col" className="px-6 py-4 font-medium text-petrol text-xl">
-          Email
+        <th
+          scope="col"
+          className="px-6 py-4 font-medium text-petrol text-xl"
+          onClick={() => onSort("email")}
+        >
+          Email {getSortIcon("EMAIL")}
         </th>
 
         {/* Business status */}
-        <th scope="col" className="px-6 py-4 font-medium text-petrol text-xl">
-          Business status
+        <th
+          scope="col"
+          className="px-6 py-4 font-medium text-petrol text-xl"
+          onClick={() => onSort("status")}
+        >
+          Business status {getSortIcon("STATUS")}
         </th>
 
         {/* Industry */}
-        <th scope="col" className="px-6 py-4 font-medium text-petrol text-xl">
-          Industry
+        <th
+          scope="col"
+          className="px-6 py-4 font-medium text-petrol text-xl"
+          onClick={() => onSort("industry")}
+        >
+          Industry {getSortIcon("INDUSTRY")}
         </th>
 
         {/* Action */}
