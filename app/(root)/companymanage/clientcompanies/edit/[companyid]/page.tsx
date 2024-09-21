@@ -1,18 +1,21 @@
 "use client";
 import {
-  fetchCCompanyData,
   ICompany,
+  fetchCCompanyUpdateData,
+  fetchCCompanyData,
 } from "@/app/_utils/company/clienCompany/FetchCCompanyData";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import placeholderImage from "../../../../../../public/healthicons_ui-user-profile.png";
 
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import MapImage from "@/public/5462573_direction_google_gps_location_map_icon 1map.png";
 import TitleAddAndEdit from "@/app/_components/UI/TitleAddAndEdit";
 import { IClientCompanyInput } from "@/app/_utils/company/clienCompany/AddClientCompany";
 import { useForm } from "react-hook-form";
+import updateCompany from "@/app/_utils/company/clienCompany/updateCompany";
 
 const page = ({ params }: { params: { companyid: number } }) => {
   const companyId = params.companyid;
@@ -25,11 +28,35 @@ const page = ({ params }: { params: { companyid: number } }) => {
   } = useForm();
   const [imagePreview, setImagePreview] = useState<string | null>(null); // State for image preview
   const [imageFile, setImageFile] = useState<File | null>(null); // State for the actual image file
+
   // Fetch company data using react-query
   const { data, isLoading, error } = useQuery<ICompany>({
     queryKey: ["companyData", companyId],
+    // queryFn: () => fetchCCompanyUpdateData(companyId),
     queryFn: () => fetchCCompanyData(companyId),
   });
+
+  const mutation = useMutation({
+    mutationFn: (formData: { data: IClientCompanyInput; image: File | null }) =>
+      updateCompany(formData.data, formData.image),
+    onSuccess: (data: any) => {
+      toast.success("company successfully added!");
+      console.log("User successfully added", data);
+      // setTimeout(() => {
+      //   router.push("/usermanage/users");
+      // }, 2000);
+    },
+    onError: (error: any) => {
+      console.error("Error adding company:", error);
+      // Set the error message from the server response
+      if (error?.response?.data?.message) {
+        toast.error(error?.response?.data?.message);
+      } else {
+        toast.error("Failed to add company. Please try again.");
+      }
+    },
+  });
+
   useEffect(() => {
     // Only execute reset when data is available
     if (data) {
@@ -38,26 +65,26 @@ const page = ({ params }: { params: { companyid: number } }) => {
 
       // Reset form with fetched data
       reset({
-        fullName: companyData.name,
-        email: companyData.email,
-        website: companyData.website,
-        faxNumber: companyData.faxNumber || "",
-        industry: companyData.industry,
-        headName: companyData.headInfo.headFullName,
-        headEmail: companyData.headInfo.headEmail,
-        headPhoneNumber: companyData.headInfo.headPhoneNumber || "",
-        street: companyData.branches[0]?.address?.street || "",
-        zipCode: companyData.branches[0]?.address?.zipCode || "",
-        city: companyData.branches[0]?.address?.city || "",
-        state: companyData.branches[0]?.address?.state || "",
-        country: companyData.branches[0]?.address?.country || "",
-        branchLatitude: companyData.branches[0]?.location?.latitude || "",
-        branchLongitude: companyData.branches[0]?.location?.longitude || "",
+        fullName: companyData?.name,
+        email: companyData?.email,
+        website: companyData?.website,
+        faxNumber: companyData?.faxNumber || "",
+        industry: companyData?.industry,
+        headName: companyData?.headInfo?.headFullName,
+        headEmail: companyData?.headInfo?.headEmail,
+        headPhoneNumber: companyData?.headInfo?.headPhoneNumber || "",
+        street: companyData?.branches[0]?.address?.street || "",
+        zipCode: companyData?.branches[0]?.address?.zipCode || "",
+        city: companyData?.branches[0]?.address?.city || "",
+        state: companyData?.branches[0]?.address?.state || "",
+        country: companyData?.branches[0]?.address?.country || "",
+        branchLatitude: companyData?.branches[0]?.location?.latitude || "",
+        branchLongitude: companyData?.branches[0]?.location?.longitude || "",
       });
 
       // Set logo if available
-      if (companyData.logo) {
-        setImagePreview(companyData.logo);
+      if (companyData?.logo) {
+        setImagePreview(companyData?.logo);
       }
     }
   }, [data, reset]); //
@@ -82,24 +109,25 @@ const page = ({ params }: { params: { companyid: number } }) => {
       },
       branches: [
         {
-          name: data.branchName,
-          phoneNumber: data.BranchPhoneNumber,
+          name: data.branchName || "",
+          phoneNumber: data.branchPhoneNumber || "",
           address: {
-            street: data.street,
-            city: data.city,
-            state: data.state,
-            zipCode: data.zipCode,
-            country: data.country,
+            street: data.street || "",
+            city: data.city || "",
+            state: data.state || "",
+            zipCode: data.zipCode || "",
+            country: data.country || "",
           },
           location: {
-            latitude: parseFloat(data.branchLatitude),
-            longitude: parseFloat(data.branchLongitude),
+            latitude: parseFloat(data.branchLatitude) || 0,
+            longitude: parseFloat(data.branchLongitude) || 0,
           },
         },
       ],
     };
 
-    mutation.mutate({ data: formData, image: imageFile });
+    // mutation.mutate({ data: formData, image: imageFile });
+    console.log("Form Data", formData);
   };
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -113,9 +141,9 @@ const page = ({ params }: { params: { companyid: number } }) => {
     <div className=" h-full w-full overflow-x-auto py-9">
       <TitleAddAndEdit title="Add a company" />
       <form
-        // onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(onSubmit)}
         method="POST"
-        className="space-y-6"
+        className="space-y-6 my-9"
       >
         <div className="relative flex flex-col w-full min-w-0 mb-6 break-words border border-dashed bg-clip-border rounded-2xl border-stone-200 bg-light/30 p-6">
           {/* Image Section */}
@@ -182,7 +210,7 @@ const page = ({ params }: { params: { companyid: number } }) => {
               <label className="block text-gray-700">fax Number *</label>
               <input
                 type="text"
-                {...register("faxNumberr", { required: true })}
+                {...register("faxNumber", { required: true })}
                 className="border rounded-lg w-full px-3 py-2"
               />
               {errors.website && (

@@ -18,6 +18,13 @@ const CCDetailsSection = ({
   createdDate = "N/A",
   modifiedDate = "N/A", // Fallback to "N/A" if modifiedDate is undefined
 }: IProps) => {
+  const modifiedFormattedDate = new Date(modifiedDate).toLocaleDateString(
+    "en-GB"
+  );
+  const CreatedFormattedDate = new Date(createdDate).toLocaleDateString(
+    "en-GB"
+  );
+
   return (
     <div className="px-9 pt-5 pb-5 flex-auto bg-transparent">
       <div className="flex flex-col space-y-4">
@@ -44,11 +51,11 @@ const CCDetailsSection = ({
         </div>
         <div className="flex justify-between w-[50%]">
           <p className="text-petrol font-medium">CreatedDate</p>
-          <p className="text-[#7D7D7D]">{createdDate}</p>
+          <p className="text-[#7D7D7D]">{CreatedFormattedDate}</p>
         </div>
         <div className="flex justify-between w-[50%]">
           <p className="text-petrol font-medium">ModifiedDate</p>
-          <p className="text-[#7D7D7D]">{modifiedDate}</p>
+          <p className="text-[#7D7D7D]">{modifiedFormattedDate}</p>
         </div>
       </div>
     </div>

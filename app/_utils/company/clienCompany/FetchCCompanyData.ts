@@ -50,3 +50,18 @@ export const fetchCCompanyData = async (
   );
   return response.data;
 };
+
+export const fetchCCompanyUpdateData = async (
+  companyId: number
+): Promise<ICompany> => {
+  const token = getCookie("token");
+  const response = await axios.get<ICompany>(
+    `http://localhost:8090/api/v1/management/company/client/${companyId}/update`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};

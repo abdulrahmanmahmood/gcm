@@ -30,7 +30,12 @@ const Page = () => {
     },
     onError: (error) => {
       console.error("Error adding project:", error);
-      toast.error("Failed to add project"); // Notify user on error
+
+      if (error?.response?.data?.message) {
+        toast.error(error?.response?.data?.message);
+      } else {
+        toast.error("Failed to add project. Please try again.");
+      }
     },
   });
 

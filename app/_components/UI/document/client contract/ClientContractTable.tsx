@@ -1,12 +1,15 @@
 "use client";
-import ClientContracktsNav from "@/app/_components/UI/document/client contract/ClientContracktsNav";
-import TableBodyRow from "@/app/_components/UI/TableBodyRow";
-import TableHeader from "@/app/_components/UI/TableHeader";
-import { SubContractors } from "@/app/_interfaces";
+import ProjectsManagementBodyRow from "@/app/_components/ClientManagement/CompanyManagment/Projects/ProjectsManagementBodyRow";
+import ProjectsManagementTableHeader from "@/app/_components/ClientManagement/CompanyManagment/Projects/ProjectsManagementTableHeader";
+import ProjectsManagementNav from "@/app/_components/ProjectsManagementNav";
+import { ClientContract, Project } from "@/app/_interfaces";
 import { FetchAllData } from "@/app/_utils/general/FetchAllData";
 import Pagination from "@/app/_utils/Pagination";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
+import ClientContracktsNav from "./ClientContracktsNav";
+import ClientContractsTableHeader from "./ClientContractsTableHeader";
+import ClientContractsBodyRow from "./ClientContractsBodyRow";
 
 const ClientContractTable = () => {
   const [pageNumber, setPageNumber] = useState(0); // Track the current page
@@ -14,12 +17,40 @@ const ClientContractTable = () => {
   const [searchKeyword, setSearchKeyword] = useState(""); // Track the search keyword
   const [filters, setFilters] = useState<any>({}); // Store the filters here
   const [sortBy, setSortBy] = useState<string[]>(["ID_ASC"]); // Default sort by ID ascending
-  const [allChecked, setAllChecked] = useState(false); // Track if all rows are checked
-  const [checkedRows, setCheckedRows] = useState<{ [key: number]: boolean }>(
-    {}
-  ); // Track checked rows
 
-  // Handle Search
+  const { data, error, isLoading, refetch } = useQuery({
+    queryKey: ["users", pageNumber, pageSize, searchKeyword, filters, sortBy],
+    queryFn: () =>
+      FetchAllData(
+        "management/contract/client/all",
+        pageNumber,
+        pageSize,
+        searchKeyword,
+        filters,
+        sortBy,
+        "client contracts"
+        // sortDirection
+      ),
+    placeholderData: keepPreviousData,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  if (data) {
+    console.log("data", data);
+  }
+  if (error) {
+    console.log("error", error);
+  }
+  if (isLoading) {
+    console.log("isLoading", isLoading);
+  }
+
+  useEffect(() => {
+    refetch();
+  }, [searchKeyword, filters, sortBy]);
+
+  // Search Handler
+
   const handleSearch = (keyword: string, filters: any) => {
     setSearchKeyword(keyword);
     setFilters(filters);
@@ -76,107 +107,25 @@ const ClientContractTable = () => {
     setPageNumber(0); // Reset to first page when changing page size
   };
 
-  /////////////////////////Make the CheckBox //////////////////////
-  const handleToggleAll = () => {
-    const newAllChecked = !allChecked;
-    setAllChecked(newAllChecked);
-
-    const updatedCheckedRows = BodyRowData.reduce((acc, row) => {
-      acc[row.id] = newAllChecked;
-      return acc;
-    }, {} as { [key: number]: boolean });
-
-    setCheckedRows(updatedCheckedRows);
-  };
-
-  const handleToggleRow = (id: number) => {
-    setCheckedRows((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
-
-  // TableBodyRow
-  // Columns Configuration
-  const Headercolumns = [
-    { label: "Company Name", key: "companyName", sortable: true },
-    { label: "Project Name", key: "projectName", sortable: false },
-    { label: "The images", key: "image", sortable: false },
-    { label: "Start Date", key: "startDate", sortable: true },
-  ];
-  const columns = [
-    {
-      key: "company" as keyof SubContractors,
-      label: "Company Name",
-      render: (company: any) => company.name,
-    },
-    {
-      key: "project" as keyof SubContractors,
-      label: "Project Name",
-      render: (project: any) => project,
-    },
-    { key: "image" as keyof SubContractors, label: "The image" },
-    { key: "startDate" as keyof SubContractors, label: "Start Date" },
-  ];
-
-  const BodyRowData = [
-    // Some mock data for demonstration
-    {
-      id: 1,
-      company: {
-        name: "Company",
-      },
-      project: "Project 1",
-      startDate: "2023-01-01",
-      image: "The image",
-    },
-    {
-      id: 2,
-      company: {
-        name: "Global Clear Mission",
-      },
-      project: "Project 1",
-      startDate: "2023-01-01",
-      image: "The image",
-    },
-  ];
-
   return (
     <>
       <ClientContracktsNav onSearch={handleSearch} />
 
-      {/* Table */}
+      {/* component */}
       <div className="overflow-auto h-[72vh] shadow-md p-1">
         <table className="w-full border-collapse bg-white text-sm text-petrol text-center text-nowrap">
-          {/* Use GeneralTableHeader */}
-          <TableHeader
-            columns={Headercolumns}
-            sortBy={sortBy}
-            onSort={handleSort}
-            allChecked={allChecked}
-            onToggleAll={handleToggleAll}
-          />
+          <ClientContractsTableHeader sortBy={sortBy} onSort={handleSort} />
           <tbody className="divide-y divide-gray-100 border-t border-gray-100 max-h-[60vh]">
-            {/* {RealData?.content?.map((contract: ClientContract) => (
+            {data?.content?.map((user: ClientContract) => (
+              <ClientContractsBodyRow key={user.id} contract={user} />
+            ))}
+
+            {/* {Array.from({ length: 20 }, (_, index) => (
               <ClientContractsBodyRow
-                key={contract.id}
-                contract={contract}
+                key={index}
+                project={StaticClientContract}
               />
             ))} */}
-
-            {BodyRowData?.map((contract: SubContractors) => (
-              <TableBodyRow
-                key={contract.id}
-                data={contract}
-                columns={columns}
-                isChecked={!!checkedRows[contract.id]}
-                onToggle={() => handleToggleRow(contract.id)}
-                actions={{
-                  viewPath: `/documentmanage/subcontractors/${contract.id}`,
-                  editPath: `/documentmanage/subcontractors/edit/${contract.id}`,
-                }}
-              />
-            ))}
           </tbody>
         </table>
       </div>
@@ -206,13 +155,13 @@ const ClientContractTable = () => {
           onPageChange={handlePageChange}
           pageNumber={pageNumber}
           pageSize={pageSize}
-          totalElementsCount={BodyRowData?.totalElementsCount ?? 0}
+          totalElementsCount={data?.totalElementsCount ?? 0}
         />
 
         {/* Displaying Total Users */}
         <div className="flex items-center space-x-2 mr-5">
           <span className="text-gray-700">
-            Total: {BodyRowData?.totalElementsCount} users
+            Total: {data?.totalElementsCount} users
           </span>
         </div>
       </div>

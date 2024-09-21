@@ -11,8 +11,8 @@ const Drawer = ({}: Iprops) => {
   const pathname = usePathname();
 
   return (
-    <div className="mt-4 px-1 md:px-2 lg:px-3 flex flex-col max-md:h-[90vh] h-[70vh] relative">
-      <div className="">
+    <div className="mt-4  flex flex-col h-auto min-h-[70%]   lg:pr-6  justify-between pb-3">
+      <div className="justify-start">
         {DrawerItems.map((item) => (
           <Link href={item.url} key={item.id}>
             <div
@@ -48,13 +48,14 @@ const Drawer = ({}: Iprops) => {
           </Link>
         ))}
       </div>
-
-      <button className="text-[#C32B43] lg:text-xl text-xs px-1 md:px-2 lg:px-4 items-center lg:w-[220px] md:w-[160px] w-[100px] py-3 absolute bottom-0 ">
-        <div className="flex flex-row font-bold mr-3 text-nowrap">
-          <RiLogoutCircleLine className="text-3xl my-auto mx-auto" />
-          <p className="hidden lg:block">Log out</p>
-        </div>
-      </button>
+      <div className="justify-end ">
+        <button className="text-[#C32B43] lg:text-xl text-xs px-1 md:px-2 lg:px-4 items-center lg:w-[220px] md:w-[160px] w-[100px] py-3  bottom-0 ">
+          <div className="flex flex-row font-bold mr-3 text-nowrap">
+            <RiLogoutCircleLine className="text-3xl my-auto mx-auto" />
+            <p className="hidden lg:block">Log out</p>
+          </div>
+        </button>
+      </div>
     </div>
   );
 };

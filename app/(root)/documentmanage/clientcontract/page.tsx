@@ -1,9 +1,12 @@
-import React from 'react'
+import ClientContractTable from "@/app/_components/UI/document/client contract/ClientContractTable";
+import React from "react";
 
 const page = () => {
   return (
-    <div>comming soon.....</div>
-  )
-}
+    <div>
+      <ClientContractTable />
+    </div>
+  );
+};
 
-export default page
+export default page;

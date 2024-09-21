@@ -1,12 +1,11 @@
 import axios from "axios";
 import { IFormInput } from "./addUser";
 import { IClientInput } from "./addClient";
-import { IClientContractInput } from "./document/clientcontract/addClientContract";
 
-const sendMixedContentRequest = async (
+const updateMixedContentRequest = async (
   url: string,
   jsonKey: string,
-  jsonData: IFormInput | IClientInput | IClientContractInput,
+  jsonData: IFormInput | IClientInput,
   imageKey: string,
   imageFile: File | null, // Make it nullable if imageFile is optional
   token: string
@@ -26,17 +25,17 @@ const sendMixedContentRequest = async (
   }
 
   try {
-    const response = await axios.post(url, formData, {
+    const response = await axios.put(url, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
-        // You don't need to manually set Content-Type for FormData; Axios will do it automatically
+        // Axios automatically sets the Content-Type to multipart/form-data for FormData objects
       },
     });
     return response.data;
   } catch (error) {
-    console.error("Error in sendMixedContentRequest:", error);
+    console.error("Error in updateMixedContentRequest:", error);
     throw error;
   }
 };
 
-export default sendMixedContentRequest;
+export default updateMixedContentRequest;

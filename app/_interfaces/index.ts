@@ -220,3 +220,64 @@ export interface ProjectsAxiosResponse {
   totalPagesCount: number;
   totalElementsCount: number;
 }
+
+// //////////////////Client Contract//////////////////
+export interface ClientContract {
+  id: number;
+  company: {
+    id: number;
+    name: string;
+    logoExits: boolean;
+    logo: string;
+  };
+  project: {
+    id: number;
+    name: string;
+  };
+  image: {
+    data: string;
+    id: string;
+    size: number;
+    extension: string;
+    contentType: string;
+    baseName: string;
+    uploadDate: string;
+  };
+  name: string;
+  cost: number;
+  startDate: string; // ISO Date format as string
+  endDate: string; // ISO Date format as string
+  createdDate: string;
+  modifiedDate: string;
+}
+export interface ClientContractAxiosResponse {
+  data: ClientContract[] | any;
+  emptyPage: boolean;
+  firstPage: boolean;
+  lastPage: boolean;
+  pageElementCount: number;
+  pageNumber: number;
+  pageSize: number;
+  sortedPage: boolean;
+  totalPagesCount: number;
+  totalElementsCount: number;
+}
+// SUBCONTRACTORS//////////////////
+export interface SubContractors {
+  id: number;
+  company: {
+    name: string;
+  };
+  project: string;
+  image: string;
+  startDate: string; // ISO Date format as string
+}
+
+/////////////////// Conotainers//////////////////
+export interface clientContainer {
+  id: number;
+  wasteType: string;
+  status: string;
+  volumeValue: string;
+  weightValue: string;
+}

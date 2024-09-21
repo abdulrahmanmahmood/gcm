@@ -45,11 +45,11 @@ const CompanyProfilePage = ({ params }: { params: { companyid: number } }) => {
 
       <CCDetailsSection
         createdDate={companyData.createdDate}
-        headPhoneNumber={companyData.headInfo?.phoneNumber}
+        headPhoneNumber={companyData.headInfo?.headPhoneNumber}
         email={companyData.email}
         faxNumber={companyData.faxNumber}
-        headEmail={companyData.headInfo?.email}
-        headName={companyData.headInfo?.name}
+        headEmail={companyData.headInfo?.headEmail}
+        headName={companyData.headInfo?.headFullName}
         modifiedDate={companyData.modifiedDate}
       />
       <UserCardAddressSection

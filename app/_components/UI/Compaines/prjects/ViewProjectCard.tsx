@@ -1,5 +1,6 @@
 import { Project } from "@/app/_interfaces";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import { FaEdit } from "react-icons/fa";
 import { IoIosArrowDropleftCircle } from "react-icons/io";
@@ -23,7 +24,7 @@ const ViewProjectCard = ({ project }: Iprops) => {
           {/* Project Logo */}
           {project.company.logoExists ? (
             <Image
-              src={project?.company?.logo} // Use actual logo path if available
+              src={project?.company?.logo ?? ""} // Use actual logo path if available
               alt={project.name}
               width={80}
               height={80}
@@ -55,13 +56,15 @@ const ViewProjectCard = ({ project }: Iprops) => {
         </div>
 
         {/* Edit Button */}
-        <button
-          // onClick={handleEditClick}
-          className="bg-petrol text-white flex items-center px-4 w-[90px] h-[40px] rounded-lg hover:bg-petrol-dark focus:outline-none focus:ring-2 focus:ring-petrol"
-        >
-          <FaEdit className="mr-2" />
-          Edit
-        </button>
+        <Link href={`/companymanage/projects/edit/${project.id}`}>
+          <button
+            // onClick={handleEditClick}
+            className="bg-petrol text-white flex items-center px-4 w-[90px] h-[40px] rounded-lg hover:bg-petrol-dark focus:outline-none focus:ring-2 focus:ring-petrol"
+          >
+            <FaEdit className="mr-2" />
+            Edit
+          </button>
+        </Link>
       </div>
     </div>
   );

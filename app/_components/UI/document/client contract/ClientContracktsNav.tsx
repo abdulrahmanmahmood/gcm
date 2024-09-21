@@ -1,25 +1,24 @@
-"use client";
 import Link from "next/link";
 import React, { useState } from "react";
 
 interface IProps {
   onSearch: (keyword: string, filters: any) => void;
-  link: string;
 }
-
-const CompaniesManagementNav = ({ onSearch, link }: IProps) => {
+const ClientContracktsNav = ({ onSearch }: IProps) => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [registrationDate, setRegistrationDate] = useState<string>("");
-  const [businessStatus, setBusinessStatus] = useState<string>(""); // Default to 'Active'
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
+  const [company, setCompany] = useState<string>("");
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const keyword = e.target.value;
     setSearchKeyword(keyword);
 
     const filters = {
-      filterCreatedDate: registrationDate ?? null,
-      filterBusinessStatus: businessStatus ?? null, // Include business status
+      filterStartDate: startDate ?? null,
+      filterEndDate: endDate ?? null,
+      filterCompany: company ?? null,
     };
     onSearch(keyword, filters); // Call the search handler immediately when typing
   };
@@ -31,16 +30,12 @@ const CompaniesManagementNav = ({ onSearch, link }: IProps) => {
 
   const handleSearch = () => {
     const filters = {
-      filterCreatedDate: registrationDate ?? null,
-      filterBusinessStatus: businessStatus ?? null, // Include business status in the filters
+      filterStartDate: startDate ?? null,
+      filterEndDate: endDate ?? null,
+      filterCompany: company ?? null,
     };
     onSearch(searchKeyword, filters);
     toggleFilterModal(); // Close the filter modal after applying filters
-  };
-
-  // Handle business status change
-  const handleStatusChange = (status: string) => {
-    setBusinessStatus(status); // Update business status state
   };
 
   return (
@@ -60,7 +55,7 @@ const CompaniesManagementNav = ({ onSearch, link }: IProps) => {
           Filter
         </div>
         <Link
-          href={link}
+          href="/documentmanage/clientcontract/add"
           className="w-36 text-center rounded-lg text-white py-3 bg-petrol cursor-pointer"
         >
           Add New
@@ -83,53 +78,37 @@ const CompaniesManagementNav = ({ onSearch, link }: IProps) => {
             <div className="grid grid-cols-1 gap-4 text-petrol">
               <div className="col-span-1">
                 <label className="block text-sm font-medium m-1">
-                  Created Date
+                  Start Date
                 </label>
                 <input
                   type="date"
                   className="w-full border border-gray-300 rounded-md p-2 focus:ring-petrol focus:border-petrol"
-                  value={registrationDate}
-                  onChange={(e) => setRegistrationDate(e.target.value)}
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
                 />
               </div>
 
-              {/* Business Status Filters */}
               <div className="col-span-1">
                 <label className="block text-sm font-medium m-1">
-                  Business Status
+                  End Date
                 </label>
-                <div className="flex space-x-4 mt-2">
-                  <label className="inline-flex items-center">
-                    <input
-                      type="radio"
-                      value="ACTIVE"
-                      checked={businessStatus === "ACTIVE"}
-                      onChange={() => handleStatusChange("ACTIVE")}
-                      className="form-radio text-petrol"
-                    />
-                    <span className="ml-2">Active</span>
-                  </label>
-                  <label className="inline-flex items-center">
-                    <input
-                      type="radio"
-                      value="INACTIVE"
-                      checked={businessStatus === "INACTIVE"}
-                      onChange={() => handleStatusChange("INACTIVE")}
-                      className="form-radio text-petrol"
-                    />
-                    <span className="ml-2">Inactive</span>
-                  </label>
-                  <label className="inline-flex items-center">
-                    <input
-                      type="radio"
-                      value="CLOSED"
-                      checked={businessStatus === "CLOSED"}
-                      onChange={() => handleStatusChange("CLOSED")}
-                      className="form-radio text-petrol"
-                    />
-                    <span className="ml-2">Closed</span>
-                  </label>
-                </div>
+                <input
+                  type="date"
+                  className="w-full border border-gray-300 rounded-md p-2 focus:ring-petrol focus:border-petrol"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
+              </div>
+
+              <div className="col-span-1">
+                <label className="block text-sm font-medium m-1">Company</label>
+                <input
+                  type="text"
+                  className="w-full border border-gray-300 rounded-md p-2 focus:ring-petrol focus:border-petrol"
+                  placeholder="Enter company"
+                  value={company}
+                  onChange={(e) => setCompany(e.target.value)}
+                />
               </div>
             </div>
 
@@ -155,4 +134,4 @@ const CompaniesManagementNav = ({ onSearch, link }: IProps) => {
   );
 };
 
-export default CompaniesManagementNav;
+export default ClientContracktsNav;

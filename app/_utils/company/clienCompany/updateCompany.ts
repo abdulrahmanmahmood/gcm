@@ -1,6 +1,7 @@
 // _utils/AddClientCompany.ts
 import { getCookie } from "cookies-next";
 import sendMixedContentRequest from "../../sendMixedContentRequest";
+import updateMixedContentRequest from "../../updateMixedContentRequest";
 
 // Define the structure of the client company input
 export interface IClientCompanyInput {
@@ -32,10 +33,9 @@ export interface IClientCompanyInput {
   logo?: File; // Optional logo file
 }
 
-export const addClientCompany = async (
+export const updateCompany = async (
   clientCompanyData: IClientCompanyInput,
-  logoFile: File | null,
-  endpoint: string // Pass the API endpoint as a parameter
+  logoFile: File | null
 ) => {
   const token = getCookie("token"); // Retrieve the token from cookies
 
@@ -68,16 +68,18 @@ export const addClientCompany = async (
     })),
   };
 
+  console.log("Data to be sent:", jsonData);
+
+
   // Use the `sendMixedContentRequest` utility to send the request
-  return sendMixedContentRequest(
-    // "http://localhost:8090/api/v1/management/company/client/new", // API URL
-    endpoint,
-    "form", // JSON key
-    jsonData, // The JSON data to be sent
-    "logo", // The image key for the file upload
-    logoFile,
-    `${token}` // Pass the token
-  );
+  // return updateMixedContentRequest(
+  //   "http://localhost:8090/api/v1/management/company/client/update", // API URL
+  //   "form", // JSON key
+  //   jsonData, // The JSON data to be sent
+  //   "logo", // The image key for the file upload
+  //   logoFile,
+  //   `${token}` // Pass the token
+  // );
 };
 
-export default addClientCompany;
+export default updateCompany;

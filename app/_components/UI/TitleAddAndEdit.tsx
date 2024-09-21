@@ -7,7 +7,7 @@ interface IProps {
 const TitleAddAndEdit = ({ title }: IProps) => {
   return (
     <div>
-      <h2 className="text-2xl text-petrol items-center">
+      <h2 className="text-3xl font-semibold text-petrol items-center">
         <IoIosArrowDropleftCircle className="text-petrol text-4xl my-auto inline-block mr-5" />
         {title}
       </h2>

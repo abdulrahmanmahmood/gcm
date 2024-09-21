@@ -96,7 +96,10 @@ function CompaniesManagementTable() {
 
   return (
     <>
-      <CompaniesManagementNav onSearch={handleSearch} />
+      <CompaniesManagementNav
+        onSearch={handleSearch}
+        link="/companymanage/clientcompanies/addcompany"
+      />
       <CMHeader />
 
       {/* component */}
