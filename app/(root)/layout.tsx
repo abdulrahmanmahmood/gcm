@@ -6,6 +6,7 @@ import Navbar from "../_components/Navbar";
 import { getCookie, hasCookie } from "cookies-next";
 import { cookies } from "next/headers";
 import { useRouter } from "next/navigation";
+import InternetConnectionService from "../_components/UI/InternetConnectionService";
 
 export default function RootLayout({
   children,
@@ -25,9 +26,11 @@ export default function RootLayout({
   // console.log("cookeis in root layout", name);
 
   return (
-    <div className=" flex flex-row overflow-auto ">
+    <div className=" flex flex-row overflow-auto m-0 ">
       {/* LEFT */}
       <div className="lg:w-[18%] md:w-[15%] bg-white flex-col pt-[20px] fixed overflow-hidden h-screen">
+      {/* <InternetConnectionService /> */}
+
         <Image
           src={logo}
           alt="drawer logo"
@@ -38,7 +41,7 @@ export default function RootLayout({
         <Drawer />
       </div>
       {/* RIGHT */}
-      <div className="w-[100%] lg:w-[82%] md:w-[85%] overflow-hidden pb-3 border-l-[1px] lg:ml-[19%] md:ml-[19%]">
+      <div className="w-[100%] lg:w-[82%] md:w-[85%]  border-l-[1px] lg:ml-[19%] md:ml-[19%] overflow-y-hidden ">
         <Navbar
           email="ahmedmohamedabdellhady@gmail.com"
           name={`${name ? name : null}`}

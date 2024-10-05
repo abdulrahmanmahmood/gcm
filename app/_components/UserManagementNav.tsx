@@ -52,7 +52,7 @@ const UserManagementNav = ({ onSearch }: IProps) => {
   };
 
   return (
-    <div className="w-full flex flex-row space-x-6 my-5 px-10">
+    <div className="w-full flex flex-row space-x-6 my-2 px-10">
       <input
         type="text"
         placeholder="Search here"

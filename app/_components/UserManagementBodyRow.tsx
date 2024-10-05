@@ -7,9 +7,11 @@ import Link from "next/link";
 
 interface IProps {
   user: User;
+  onSelect: (userId: number, isSelected: boolean) => void;
+  isChecked: boolean;
 }
 
-const UserManagementBodyRow = ({ user }: IProps) => {
+const UserManagementBodyRow = ({ user, onSelect, isChecked }: IProps) => {
   const [showModal, setShowModal] = useState(false); // State to toggle the modal
 
   const formattedDate = new Date(user.createdDate).toLocaleDateString("en-GB");
@@ -25,12 +27,14 @@ const UserManagementBodyRow = ({ user }: IProps) => {
   return (
     <tr key={user.id} className="hover:bg-gray-50">
       {/* Check Box */}
-      <td className="px-6 py-4 whitespace-nowrap mx-auto ">
+      <td className="px-6 py-4 whitespace-nowrap mx-auto  ">
         <div className="flex items-center">
           <input
             id="checkbox-all"
             type="checkbox"
             className="size-8 text-petrol accent-petrol bg-gray-100 rounded-[50%]  focus:ring-petrol "
+            checked={isChecked}
+            onChange={() => onSelect(user.id, !isChecked)}
           />
           {/* <label htmlFor="checkbox-all" className="sr-only">
           checkbox
@@ -149,12 +153,12 @@ const UserManagementBodyRow = ({ user }: IProps) => {
         </button>
         {/* </Link> */}
         {showModal && (
-          <div className="absolute right-10 z-10 mt-18 w-20 rounded-md bg-[#6B779A1A] shadow-lg">
-            <div className="flex flex-col gap-1">
-              <button className="w-full text-left px-4 py-2 text-sm text-petrol hover:bg-gray-100">
+          <div className="absolute right-10 z-10 mt-4 w-20 rounded-md bg-[#6B779A1A] shadow-lg">
+            <div className="flex flex-col gap-0 bg-white border border-spacing-1 rounded-sm shadow-sm">
+              <button className="w-full text-left px-3 py-2 pb-0 mb-0 text-sm text-petrol hover:bg-gray-100">
                 <Link href={`users/${user.id}`}>View</Link>
               </button>
-              <button className="w-full text-left px-4 py-2 text-sm text-petrol hover:bg-gray-100">
+              <button className="w-full text-left px-3 py-2 text-sm text-petrol hover:bg-gray-100">
                 <Link href={`/usermanage/users/edit/${user.id}`}>Edit</Link>
               </button>
             </div>

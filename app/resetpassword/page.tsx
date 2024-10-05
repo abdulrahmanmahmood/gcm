@@ -2,11 +2,11 @@
 import Image from "next/image";
 import logo from "../../public/logo.jpg";
 import { useState } from "react";
-import axios from "axios";
 import { setCookie } from "cookies-next";
 import "react-toastify/dist/ReactToastify.css";
 import { toast, ToastContainer } from "react-toastify";
 import { useRouter } from "next/navigation";
+import axiosInstant from "../_axios/axios";
 
 const Page = () => {
   const [email, setEmail] = useState("");
@@ -24,8 +24,8 @@ const Page = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost:8090/api/v1/authentication/find-account",
+      const response = await axiosInstant.post(
+        "/api/v1/authentication/find-account",
         { email }
       );
       console.log("Response:", response.data);
@@ -39,10 +39,13 @@ const Page = () => {
         router.push("resetpassword/validation");
       }, 2000); // 2-second delay
       // Handle success response here (e.g., show a success message)
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error:", error);
-      toast.error("An error occurred while sending the email.");
-      // Handle error response here (e.g., show an error message)
+      if (error?.response?.data?.message) {
+        toast.error(error?.response?.data?.message);
+      } else {
+        toast.error("An error occurred while sending the email.");
+      }
     } finally {
       setIsLoading(false);
     }

@@ -7,7 +7,7 @@ export const fetchUser = async (userId: number): Promise<UserAxiosResponse> => {
   console.log("token in fetch user", token);
 
   const { data } = await axiosInstant.get<UserAxiosResponse>(
-    `${baseUrl}/management/user/application/${userId}`,
+    `${baseUrl}/management/user/employee/${userId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

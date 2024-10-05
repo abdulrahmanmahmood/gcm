@@ -34,7 +34,7 @@ const page = ({ params }: { params: { user: string } }) => {
   console.log("user data", data);
 
   return (
-    <div className="relative flex flex-col w-full space-y-10  mb-6 break-words border border-dashed bg-clip-border rounded-2xl border-stone-200 bg-light/30 draggable">
+    <div className="relative overflow-auto pb-10 flex flex-col w-full space-y-10  mb-6 break-words border border-dashed bg-clip-border rounded-2xl border-stone-200 bg-light/30 draggable">
       {/* Header Section */}
       <UserCardHeader
         Role={userData.role}
@@ -61,7 +61,6 @@ const page = ({ params }: { params: { user: string } }) => {
         }
       />
       <div className="w-full my-5" />
-
 
       {/* Address Section */}
       <UserCardAddressSection

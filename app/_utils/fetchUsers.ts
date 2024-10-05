@@ -11,7 +11,7 @@ export const fetchUsers = async (
 ) => {
   const token = getCookie("token");
   const { data } = await axiosInstant.post(
-    `${baseUrl}/management/user/application/all`,
+    `${baseUrl}/management/user/employee/all`,
     {
       pageNumber,
       pageSize,

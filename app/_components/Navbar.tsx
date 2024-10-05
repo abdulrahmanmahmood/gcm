@@ -1,6 +1,5 @@
 import Image, { StaticImageData } from "next/image";
 import { FaBell } from "react-icons/fa";
-import avatar from "../../public/logo.jpg";
 
 interface Iprops {
   name: string;
@@ -11,7 +10,7 @@ interface Iprops {
 const Navbar = ({ name, email, image }: Iprops) => {
   return (
     <div className="w-full px-2 lg:px-5 flex flex-row h-[70px] bg-white top-0  justify-between">
-      <span className="my-auto text-right text-[#2E7490]">Home</span>
+      <span className="my-auto text-right text-[#2E7490]"></span>
       <div className="h-full flex space-x-3 lg:space-x-7 ">
         <FaBell className="text-2xl my-auto items-center text-[#2E7490] " />
 

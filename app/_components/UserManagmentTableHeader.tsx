@@ -8,9 +8,16 @@ import {
 interface Props {
   sortBy: string[]; // Updated to array of strings
   onSort: (column: string) => void;
+  onSelectAll: (checked: boolean) => void;
+  isChecked: boolean;
 }
 
-const UserManagmentTableHeader: React.FC<Props> = ({ sortBy, onSort }) => {
+const UserManagmentTableHeader: React.FC<Props> = ({
+  sortBy,
+  onSort,
+  onSelectAll,
+  isChecked,
+}) => {
   const getSortIcon = (column: string) => {
     // Check if the column is being sorted
     const currentSort = sortBy.find((sort) => sort.startsWith(column));
@@ -28,7 +35,14 @@ const UserManagmentTableHeader: React.FC<Props> = ({ sortBy, onSort }) => {
     <thead className="bg-gray-50 text-petrol">
       <tr>
         {/* CheckBox Input */}
-        <th className="px-6 py-4 whitespace-nowrap"></th>
+        <th className="px-6 py-4 whitespace-nowrap">
+          <input
+            type="checkbox"
+            className="size-8 text-petrol accent-petrol bg-gray-100 rounded-[50%]  focus:ring-petrol "
+            checked={isChecked}
+            onChange={(e) => onSelectAll(e.target.checked)}
+          />
+        </th>
 
         {/* Full Name */}
         <th

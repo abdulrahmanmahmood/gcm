@@ -7,9 +7,11 @@ import { SlOptionsVertical } from "react-icons/sl";
 
 interface IProps {
   user: Cleint;
+  onSelect: (userId: number, isSelected: boolean) => void;
+  isChecked: boolean;
 }
 
-const CleintManagementBodyRow = ({ user }: IProps) => {
+const CleintManagementBodyRow = ({ user, onSelect, isChecked }: IProps) => {
   const [showModal, setShowModal] = useState(false); // State to toggle the modal
 
   const formattedDate = new Date(user.createdDate).toLocaleDateString("en-GB");
@@ -30,13 +32,15 @@ const CleintManagementBodyRow = ({ user }: IProps) => {
             id="checkbox-all"
             type="checkbox"
             className="size-8 text-petrol accent-petrol bg-gray-100 rounded-[50%] focus:ring-petrol "
+            checked={isChecked}
+            onChange={() => onSelect(user.id, !isChecked)}
           />
         </div>
       </td>
 
       {/* FullName, Avatar, and Email */}
       <th className="flex gap-3 px-6 py-4 font-normal text-gray-900">
-      <div className="relative h-10 w-10">
+        <div className="relative h-10 w-10">
           {user.pictureExists && user.picture ? (
             <img
               src={`data:${user.picture.contentType};base64,${user.picture.data}`}

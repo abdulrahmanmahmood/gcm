@@ -28,6 +28,8 @@ const Page = () => {
   });
 
   const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState<boolean>(false); // New state for password visibility
+
   const router = useRouter();
 
   /////////////////////////////// HANDLERS //////////////////////////
@@ -67,6 +69,9 @@ const Page = () => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
     setError(null);
   };
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword); // Toggle password visibility
+  };
 
   return (
     <Fragment>
@@ -95,13 +100,31 @@ const Page = () => {
                   className="flex items-center w-full px-5 py-4 mr-2 text-sm font-medium outline-none focus:bg-grey-400 mb-7 placeholder:text-grey-700 bg-grey-200 border-[#DCDCDC] border-[1px] text-dark-grey-900 rounded-2xl"
                   onChange={handleChange}
                 />
-                <input
-                  id="password"
-                  type="password"
-                  placeholder="Enter a password"
-                  className="flex items-center w-full px-5 py-4 mb-5 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-200 border-[#DCDCDC] border-[1px] text-dark-grey-900 rounded-2xl"
-                  onChange={handleChange}
-                />
+                <div className="relative">
+                  <input
+                    id="password"
+                    type={showPassword ? "text" : "password"} // Dynamic input type
+                    placeholder="Enter a password"
+                    className="flex items-center w-full px-5 py-4 mb-5 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-200 border-[#DCDCDC] border-[1px] text-dark-grey-900 rounded-2xl"
+                    onChange={handleChange}
+                  />
+                  <svg
+                    onClick={togglePasswordVisibility} // Add the onClick event
+                    width="21"
+                    height="22"
+                    viewBox="0 0 21 22"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="absolute right-3 top-4"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M10.5 3.34375C7.2489 3.34375 4.8937 4.62704 3.35541 6.22449C1.84323 7.79483 1.09375 9.70066 1.09375 11C1.09375 12.2993 1.84323 14.2052 3.35541 15.7755C4.8937 17.373 7.2489 18.6562 10.5 18.6562C13.7511 18.6562 16.1063 17.373 17.6446 15.7755C19.1568 14.2052 19.9062 12.2993 19.9062 11C19.9062 9.70066 19.1568 7.79483 17.6446 6.22449C16.1063 4.62704 13.7511 3.34375 10.5 3.34375ZM10.5 9.03125C9.41269 9.03125 8.53125 9.91269 8.53125 11C8.53125 12.0873 9.41269 12.9688 10.5 12.9688C11.5873 12.9688 12.4688 12.0873 12.4688 11C12.4688 9.91269 11.5873 9.03125 10.5 9.03125ZM7.21875 11C7.21875 9.18782 8.68782 7.71875 10.5 7.71875C12.3122 7.71875 13.7812 9.18782 13.7812 11C13.7812 12.8122 12.3122 14.2812 10.5 14.2812C8.68782 14.2812 7.21875 12.8122 7.21875 11Z"
+                      fill="#DCDCDC"
+                    />
+                  </svg>
+                </div>
 
                 <div className="flex flex-row justify-end mb-8">
                   <Link

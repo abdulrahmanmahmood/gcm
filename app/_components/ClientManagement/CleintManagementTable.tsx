@@ -3,11 +3,12 @@ import React, { useEffect, useState } from "react";
 import CleintManagmentTableHeader from "./CleintManagmentTableHeader";
 import CleintManagementBodyRow from "./CleintManagementBodyRow";
 import { Cleint, User, UsersAxiosResponse } from "@/app/_interfaces";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import { fetchClients } from "@/app/_utils/fetchClients";
 import Pagination from "@/app/_utils/Pagination";
 import UserManagementHeader from "../UI/UserManagementHeader";
 import ClientManagementNav from "./ClientManagementNav";
+import { lockUnlockUsers } from "@/app/_utils/LockUnlockUser";
 
 const CleintManagementTable = () => {
   const [pageNumber, setPageNumber] = useState(0); // Track the current page
@@ -15,6 +16,7 @@ const CleintManagementTable = () => {
   const [searchKeyword, setSearchKeyword] = useState(""); // Track the search keyword
   const [filters, setFilters] = useState<any>({}); // Store the filters here
   const [sortBy, setSortBy] = useState<string[]>(["ID_ASC"]); // Default sort by ID ascending
+  const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
 
   const { data, error, isLoading, refetch } = useQuery<UsersAxiosResponse>({
     queryKey: ["clients", pageNumber, pageSize, searchKeyword, filters, sortBy],
@@ -38,6 +40,19 @@ const CleintManagementTable = () => {
   useEffect(() => {
     refetch();
   }, [searchKeyword, filters, sortBy]);
+
+  // Mutation for locking/unlocking users
+  const lockUnlockMutation = useMutation({
+    mutationFn: ({ ids, locked }: { ids: number[]; locked: boolean }) =>
+      lockUnlockUsers(ids, locked),
+    onSuccess: () => {
+      refetch(); // Refetch the data after successful lock/unlock
+      setSelectedUsers([]); // Clear the selected users
+    },
+    onError: (error) => {
+      console.error("Error performing lock/unlock action", error);
+    },
+  });
 
   // Search Handler
 
@@ -97,18 +112,83 @@ const CleintManagementTable = () => {
     setPageSize(Number(event.target.value));
     setPageNumber(0);
   };
+  //////////////////////////////////////////////////SELECT USERS HANDLERS FUNCTIONS////////////////////////
+  const handleSelectAll = (isChecked: boolean) => {
+    if (isChecked) {
+      const allUserIds = data?.content?.map((user: User) => user.id) || [];
+      setSelectedUsers(allUserIds);
+    } else {
+      setSelectedUsers([]);
+    }
+  };
+
+  // Handle Row Checkbox Toggle
+  const handleSelectUser = (userId: number, isSelected: boolean) => {
+    if (isSelected) {
+      setSelectedUsers((prev) => [...prev, userId]);
+    } else {
+      setSelectedUsers((prev) => prev.filter((id) => id !== userId));
+    }
+  };
+
+  // Handle Unlock Button Click
+  // Handle Unlock Button Click
+  const handleUnlock = () => {
+    if (selectedUsers.length > 0) {
+      lockUnlockMutation.mutate({ ids: selectedUsers, locked: true });
+    }
+  };
+
+  // Handle Lock Button Click
+  const handleLock = () => {
+    if (selectedUsers.length > 0) {
+      lockUnlockMutation.mutate({ ids: selectedUsers, locked: false });
+    }
+  };
 
   return (
     <>
       <ClientManagementNav onSearch={handleSearch} />
       <UserManagementHeader />
+      <div className="flex flex-row gap-5 justify-end mx-4 my-2  ">
+        <button
+          className="bg-greening text-white w-36 py-2 px-3 rounded-lg"
+          onClick={handleUnlock}
+          disabled={lockUnlockMutation.isLoading} // Disable while mutation is loading
+        >
+          {lockUnlockMutation.isLoading &&
+          lockUnlockMutation.variables?.locked === false
+            ? "Unlocking..."
+            : "Unlock"}
+        </button>
+        <button
+          className="bg-redd text-white w-36 py-2 px-3 rounded-lg"
+          onClick={handleLock}
+          disabled={lockUnlockMutation.isLoading} // Disable while mutation is loading
+        >
+          {lockUnlockMutation.isLoading &&
+          lockUnlockMutation.variables?.locked === true
+            ? "Locking..."
+            : "Lock"}
+        </button>
+      </div>
       {/* component */}
       <div className="overflow-auto h-[70vh] shadow-md p-1">
         <table className="w-full border-collapse bg-white  text-sm text-petrol text-center text-nowrap ">
-          <CleintManagmentTableHeader sortBy={sortBy} onSort={handleSort} />
+          <CleintManagmentTableHeader
+            sortBy={sortBy}
+            onSort={handleSort}
+            isChecked={selectedUsers.length === data?.content?.length}
+            onSelectAll={handleSelectAll}
+          />
           <tbody className="divide-y divide-gray-100 border-t border-gray-100 max-h-[60vh]">
             {data?.content?.map((client: Cleint) => (
-              <CleintManagementBodyRow key={client.id} user={client} />
+              <CleintManagementBodyRow
+                key={client.id}
+                user={client}
+                isChecked={selectedUsers.includes(client.id)}
+                onSelect={handleSelectUser}
+              />
             ))}
           </tbody>
         </table>

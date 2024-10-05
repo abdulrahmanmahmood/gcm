@@ -6,6 +6,7 @@ import VerificationCodeInput from "@/app/_components/verificationCodeInput";
 import { getCookie } from "cookies-next";
 import { toast } from "react-toastify";
 import axios from "axios";
+import axiosInstant from "@/app/_axios/axios";
 
 const page = () => {
   const fieldsRef = useRef<HTMLDivElement>(null);
@@ -47,8 +48,8 @@ const page = () => {
 
     try {
       if (!email) return;
-      const response = await axios.post(
-        "http://localhost:8090/api/v1/authentication/validate-code",
+      const response = await axiosInstant.post(
+        "/api/v1/authentication/validate-code",
         {
           email: email, // Assuming email is already retrieved and stored in a state or context
           code: fullCode,

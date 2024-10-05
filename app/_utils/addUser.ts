@@ -38,7 +38,7 @@ export const addUser = async (userData: IFormInput) => {
 
   // Use the `sendMixedContentRequest` utility to send the request
   return sendMixedContentRequest(
-    "http://localhost:8090/api/v1/management/user/application/new",
+    "http://localhost:8090/api/v1/management/user/employee/new",
     "form",
     jsonData,
     "picture",

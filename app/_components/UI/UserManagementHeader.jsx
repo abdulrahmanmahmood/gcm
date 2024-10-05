@@ -10,7 +10,7 @@ function UserManagementHeader() {
   console.log(pathname);
 
   return (
-    <div className="flex flex-row w-[30%] space-x-24 my-5 ml-8">
+    <div className="flex flex-row w-[30%] space-x-24 my-1 ml-8">
       <Link href="users">
         <div
           className={`px-12 py-3 rounded-lg ${
@@ -20,7 +20,7 @@ function UserManagementHeader() {
           }   flex flex-row  space-x-3`}
         >
           <HiUsers className="my-auto text-xl text-white " />{" "}
-          <span className="my-auto">Users</span>
+          <span className="my-auto">employees</span>
         </div>
       </Link>
       <Link href={"/usermanage/clients"}>

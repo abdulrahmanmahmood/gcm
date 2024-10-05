@@ -24,7 +24,7 @@ export const updateUser = async (
 
   // Making the PUT request to update the user data
   const { data } = await axiosInstant.put(
-    `${baseUrl}/management/user/application/${userId}/update`, // Correct URL path
+    `${baseUrl}/management/user/employee/${userId}/update`, // Correct URL path
     {
       fullName: userData.fullName,
       email: userData.email,

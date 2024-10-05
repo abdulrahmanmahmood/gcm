@@ -83,7 +83,7 @@ const ClientContractTable = () => {
     const newAllChecked = !allChecked;
     setAllChecked(newAllChecked);
 
-    const updatedCheckedRows = BodyRowData.reduce((acc, row) => {
+    const updatedCheckedRows = BodyRowDataOfClientContainers.reduce((acc, row) => {
       acc[row.id] = newAllChecked;
       return acc;
     }, {} as { [key: number]: boolean });
@@ -182,19 +182,19 @@ const ClientContractTable = () => {
         </div>
 
         {/* Pagination */}
-        <Pagination
+        {/* <Pagination
           onPageChange={handlePageChange}
           pageNumber={pageNumber}
           pageSize={pageSize}
           totalElementsCount={
             BodyRowDataOfClientContainers?.totalElementsCount ?? 0
           }
-        />
+        /> */}
 
         {/* Displaying Total Users */}
         <div className="flex items-center space-x-2 mr-5">
           <span className="text-gray-700">
-            Total: {BodyRowDataOfClientContainers?.totalElementsCount} users
+            {/* Total: {BodyRowDataOfClientContainers?.totalElementsCount} users */}
           </span>
         </div>
       </div>
