@@ -4,6 +4,8 @@ import { PiUsersThreeDuotone } from "react-icons/pi";
 import { PiBuildingOfficeThin } from "react-icons/pi";
 import { CgFileDocument } from "react-icons/cg";
 import { LuContainer } from "react-icons/lu";
+import { GrHostMaintenance } from "react-icons/gr";
+import { GrVmMaintenance } from "react-icons/gr";
 
 export const DrawerItems: IDrawerItem[] = [
   {
@@ -45,5 +47,21 @@ export const DrawerItems: IDrawerItem[] = [
     ),
     url: "/containermanage",
     id: "4",
+  },
+  {
+    title: "Vehicle Management",
+    icon: (
+      <LuContainer className="text-center text-xl md:text-2xl lg:text-3xl font-bold" />
+    ),
+    url: "/vehicle-management",
+    id: "5",
+  },
+  {
+    title: "Maintenace",
+    icon: (
+      <GrVmMaintenance className="text-center text-xl md:text-2xl lg:text-3xl font-bold" />
+    ),
+    url: "/maintenance",
+    id: "6",
   },
 ];

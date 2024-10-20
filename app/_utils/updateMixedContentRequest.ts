@@ -28,6 +28,7 @@ const updateMixedContentRequest = async (
     const response = await axios.put(url, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
         // Axios automatically sets the Content-Type to multipart/form-data for FormData objects
       },
     });

@@ -17,13 +17,13 @@ export default function RootLayout({
   const name = getCookie("UserName", { cookies });
 
   // const name = getCookie("UserName");
-  // const token = getCookie("token", { cookies });
+  const token = getCookie("token", { cookies });
 
   // if (token == null) {
   //   router.push("/login");
   // }
 
-  // console.log("cookeis in root layout", name);
+  console.log("cookeis in root layout", name);
 
   return (
     <div className=" flex flex-row overflow-auto m-0 ">

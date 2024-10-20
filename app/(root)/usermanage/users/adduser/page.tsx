@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { addUser } from "@/app/_utils/addUser";
 import Image from "next/image";
 import placeholderImage from "../../../../../public/healthicons_ui-user-profile.png";
@@ -10,6 +10,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
+import { FetchAllData } from "@/app/_utils/general/FetchAllData";
 const page = () => {
   const {
     register,
@@ -22,6 +23,24 @@ const page = () => {
   const router = useRouter();
 
   const token = getCookie("token");
+  const {
+    data: positions,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["positions"],
+    queryFn: () =>
+      FetchAllData(
+        "management/user/employee/position/all", // Endpoint
+        0, // Page number
+        100, // Page size, assuming you want to fetch all available employees
+        "", // No search keyword
+        {}, // No filters
+        ["ID_ASC"], // Sorting order
+        "EmployeeData"
+      ),
+  });
 
   const mutation = useMutation({
     mutationFn: addUser,
@@ -54,6 +73,7 @@ const page = () => {
   const onSubmit = async (data: any) => {
     const formData = { ...data, picture: imageFile };
     mutation.mutate(formData);
+    console.log("employeeData", data);
   };
 
   return (
@@ -136,6 +156,34 @@ const page = () => {
                 <p className="text-red-500">Gender is required</p>
               )}
             </div>
+            {/* Position Select Input */}
+            <div>
+              <label className="block text-gray-700">Position *</label>
+              <select
+                {...register("position", { required: true })}
+                className="border rounded-lg w-full px-3 py-2"
+              >
+                <option value="">Select an Position</option>
+                {isLoading ? (
+                  <option value="" disabled>
+                    Loading...
+                  </option>
+                ) : isError ? (
+                  <option value="" disabled>
+                    Failed to load employees
+                  </option>
+                ) : (
+                  positions?.content?.map((employee: any, index: number) => (
+                    <option key={index} value={employee.id}>
+                      {employee.name}
+                    </option>
+                  ))
+                )}
+              </select>
+              {errors.employee && (
+                <p className="text-red-500">Employee is required</p>
+              )}
+            </div>
 
             <div>
               <label className="block text-gray-700">Salary</label>
@@ -152,7 +200,7 @@ const page = () => {
               <label className="block text-gray-700">BirthDate</label>
               <input
                 type="date"
-                {...register("birthDate")}
+                {...register("birthDate", { required: true })}
                 className="border rounded-lg w-full px-3 py-2"
               />
             </div>

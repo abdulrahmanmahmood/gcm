@@ -92,6 +92,19 @@ export interface UsersAxiosResponse {
   sortedPage: boolean;
 }
 
+export interface AxiosErrorResponse {
+  code: string;
+  name: string;
+  message: string;
+  response: {
+    data: {
+      success: boolean;
+      message: string;
+    };
+    status: number;
+  };
+}
+
 export interface UserAxiosResponse {
   data: User;
   status: number;

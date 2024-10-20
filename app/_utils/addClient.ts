@@ -22,7 +22,7 @@ export const addClient = async (clientData: IClientInput) => {
     gender: clientData.gender,
     companyId: clientData.companyId,
   };
-
+  console.log("client data before send to mixedcontenty request", jsonData);
   // Use the `sendMixedContentRequest` utility to send the request
   return sendMixedContentRequest(
     "http://localhost:8090/api/v1/management/user/client/new",

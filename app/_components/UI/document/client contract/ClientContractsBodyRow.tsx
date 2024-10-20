@@ -34,14 +34,14 @@ const ClientContractsBodyRow = ({ contract }: IProps) => {
       {/* Company Name ,  */}
       <td className="px-6 py-4">
         <span className="inline-flex items-center gap-1 rounded-full  px-2 py-1 text-xs font-semibold">
-          {contract?.company.name}
+          {contract?.company?.name}
         </span>
       </td>
 
       {/* Project Name ,  */}
       <td className="px-6 py-4">
         <span className="inline-flex items-center gap-1 rounded-full  px-2 py-1 text-xs font-semibold">
-          {contract?.project.name}
+          {contract?.project?.name}
         </span>
       </td>
 

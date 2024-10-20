@@ -4,11 +4,14 @@ import UserManagmentTableHeader from "./UserManagmentTableHeader";
 import UserManagementBodyRow from "./UserManagementBodyRow";
 import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import { fetchUsers } from "../_utils/fetchUsers";
-import { User, UsersAxiosResponse } from "../_interfaces";
+import { AxiosErrorResponse, User, UsersAxiosResponse } from "../_interfaces";
 import Pagination from "../_utils/Pagination";
 import UserManagementNav from "./UserManagementNav";
 import UserManagementHeader from "./UI/UserManagementHeader";
 import { lockUnlockUsers } from "../_utils/LockUnlockUser";
+
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function UserManagementTable() {
   const [pageNumber, setPageNumber] = useState(0); // Track the current page
@@ -18,7 +21,10 @@ function UserManagementTable() {
   const [sortBy, setSortBy] = useState<string[]>(["ID_ASC"]); // Default sort by ID ascending
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
 
-  const { data, error, isLoading, refetch } = useQuery<UsersAxiosResponse>({
+  const { data, error, status, isLoading, refetch } = useQuery<
+    UsersAxiosResponse,
+    AxiosErrorResponse
+  >({
     queryKey: ["users", pageNumber, pageSize, searchKeyword, filters, sortBy],
     queryFn: () =>
       fetchUsers(pageNumber, pageSize, searchKeyword, filters, sortBy),
@@ -30,10 +36,23 @@ function UserManagementTable() {
     console.log("data", data);
   }
   if (error) {
-    console.log("error", error);
+    if (error?.response?.data?.message) {
+      toast.error(error?.response?.data?.message, {
+        autoClose: 2000,
+        toastId: "fetchUsersError",
+      });
+      console.log(error);
+    } else {
+      toast.error("Failed to add company. Please try again.");
+      console.log(error);
+    }
   }
   if (isLoading) {
     console.log("isLoading", isLoading);
+  }
+
+  if (status) {
+    console.log("status", status);
   }
 
   useEffect(() => {
@@ -48,8 +67,13 @@ function UserManagementTable() {
       refetch(); // Refetch the data after successful lock/unlock
       setSelectedUsers([]); // Clear the selected users
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error("Error performing lock/unlock action", error);
+      if (error?.response?.data?.message) {
+        toast.error(error?.response?.data?.message);
+      } else {
+        toast.error("Failed to add company. Please try again.");
+      }
     },
   });
 
@@ -230,6 +254,7 @@ function UserManagementTable() {
           </span>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

@@ -6,7 +6,8 @@ import MapImage from "@/public/5462573_direction_google_gps_location_map_icon 1m
 import Image from "next/image";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { getProject } from "@/app/_utils/company/projects/getProject";
 import { updateEntity } from "@/app/_utils/general/Update";
 
@@ -54,9 +55,6 @@ const Page = ({ params }: { params: { project: string } }) => {
       updateEntity(`management/project/${projectId}/update`, updatedData), // Dynamic endpoint
     onSuccess: () => {
       toast.success("Project updated successfully!");
-      setTimeout(() => {
-        router.push("/projectmanage"); // Redirect after success
-      }, 2000);
     },
     onError: (error) => {
       console.error("Error updating project:", error);
@@ -210,6 +208,7 @@ const Page = ({ params }: { params: { project: string } }) => {
           </div>
         </div>
       </form>
+      <ToastContainer />
     </div>
   );
 };

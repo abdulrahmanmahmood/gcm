@@ -2,14 +2,6 @@
 import { getCookie } from "cookies-next";
 import sendMixedContentRequest from "./sendMixedContentRequest"; // Import the utility function
 
-interface IAddress {
-  street: string;
-  city: string;
-  zipCode: string;
-  state: string;
-  country: string;
-}
-
 export interface IFormInput {
   fullName: string;
   email: string;
@@ -18,11 +10,17 @@ export interface IFormInput {
   birthDate: string;
   phoneNumber: string;
   password: string;
-  address: IAddress;
+  street: string;
+  city: string;
+  zipCode: string;
+  state: string;
+  country: string;
+  position: number;
   picture?: File; // Optional picture file
 }
 
 export const addUser = async (userData: IFormInput) => {
+  console.log("dataBefore handling", userData);
   const token = getCookie("token"); // Retrieve token from cookies
 
   const jsonData = {
@@ -33,8 +31,17 @@ export const addUser = async (userData: IFormInput) => {
     birthDate: userData.birthDate,
     phoneNumber: userData.phoneNumber,
     password: userData.password,
-    address: userData.address,
+    address: {
+      street: userData?.street,
+      city: userData?.city,
+      state: userData?.state,
+      zipCode: userData?.zipCode,
+      country: userData?.country,
+    },
+    positionId: userData.position,
   };
+
+  console.log("UserData", jsonData);
 
   // Use the `sendMixedContentRequest` utility to send the request
   return sendMixedContentRequest(

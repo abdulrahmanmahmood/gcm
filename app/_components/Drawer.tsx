@@ -1,14 +1,23 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { DrawerItems } from "../_constants";
 import { RiLogoutCircleLine } from "react-icons/ri";
+import { deleteCookie } from "cookies-next";
 
 interface Iprops {}
 
 const Drawer = ({}: Iprops) => {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogOut = () => {
+    deleteCookie("token");
+    deleteCookie("UserName");
+
+    router.push("/login");
+  };
 
   return (
     <div className="mt-4  flex flex-col h-auto min-h-[70%]   lg:pr-6  justify-between pb-3">
@@ -49,7 +58,9 @@ const Drawer = ({}: Iprops) => {
         ))}
       </div>
       <div className="justify-end ">
-        <button className="text-[#C32B43] lg:text-xl text-xs px-1 md:px-2 lg:px-4 items-center lg:w-[220px] md:w-[160px] w-[100px] py-3  bottom-0 ">
+        <button className="text-[#C32B43] lg:text-xl text-xs px-1 md:px-2 lg:px-4 items-center lg:w-[220px] md:w-[160px] w-[100px] py-3  bottom-0 "
+        onClick={handleLogOut}
+        >
           <div className="flex flex-row font-bold mr-3 text-nowrap">
             <RiLogoutCircleLine className="text-3xl my-auto mx-auto" />
             <p className="hidden lg:block">Log out</p>
