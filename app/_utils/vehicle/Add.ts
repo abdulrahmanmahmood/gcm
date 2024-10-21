@@ -16,6 +16,8 @@ export interface IVehicleInput {
   permit: {
     issueDate: string;
     expiryDate: string;
+    no: string;
+
   };
 }
 

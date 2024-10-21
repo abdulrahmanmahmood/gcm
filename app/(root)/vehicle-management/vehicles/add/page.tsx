@@ -29,7 +29,6 @@ const AddVehiclePage = () => {
       vehicleData: IVehicleInput;
       licenseFile: File | null;
       permitFile: File | null;
-
       vehiclePictures: File[];
     }) =>
       addVehicle(
@@ -123,6 +122,7 @@ const AddVehiclePage = () => {
       permit: {
         issueDate: data.permitIssueDate,
         expiryDate: data.permitExpiryDate,
+        no: data.permitNumber,
       },
     };
 
@@ -197,6 +197,7 @@ const AddVehiclePage = () => {
               { name: "color", label: "Color" },
               { name: "licensePlate", label: "License Plate" },
               { name: "year", label: "Year" },
+              { name: "permitNumber", label: "Permit Number" },
             ].map((field) => (
               <div key={field.name}>
                 <label className="block text-petrol">{field.label} *</label>
