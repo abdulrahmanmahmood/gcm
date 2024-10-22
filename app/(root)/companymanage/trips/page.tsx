@@ -25,7 +25,7 @@ const page = () => {
     queryKey: ["users", pageNumber, pageSize, searchKeyword, filters, sortBy],
     queryFn: () =>
       FetchAllData(
-        "management/vehicle/maintenance/all",
+        "management/vehicle/trip/all",
         pageNumber,
         pageSize,
         searchKeyword,
@@ -38,29 +38,29 @@ const page = () => {
     staleTime: 5 * 60 * 1000,
   });
 
-  // // Mutation for updating vehicle status
-  // const statusMutation = useMutation({
-  //   mutationFn: ({
-  //     status,
-  //     vehicleIds,
-  //   }: {
-  //     status: string;
-  //     vehicleIds: number[];
-  //   }) =>
-  //     updateEntity(`management/vehicle/change-status`, {
-  //       vehicleIds: vehicleIds,
-  //       status: status,
-  //     }), // Dynamic endpoint for vehicles
-  //   onSuccess: () => {
-  //     toast.success("Vehicle status updated successfully!");
-  //     setCheckedRows([]);
-  //     refetch();
-  //   },
-  //   onError: (error) => {
-  //     console.error("Error updating  vehicle: status", error);
-  //     toast.error("Failed to update  vehicle status.");
-  //   },
-  // });
+  // Mutation for updating vehicle status
+  const statusMutation = useMutation({
+    mutationFn: ({
+      status,
+      vehicleIds,
+    }: {
+      status: string;
+      vehicleIds: number[];
+    }) =>
+      updateEntity(`management/vehicle/change-status`, {
+        vehicleIds: vehicleIds,
+        status: status,
+      }), // Dynamic endpoint for vehicles
+    onSuccess: () => {
+      toast.success("Vehicle status updated successfully!");
+      setCheckedRows([]);
+      refetch();
+    },
+    onError: (error) => {
+      console.error("Error updating  vehicle: status", error);
+      toast.error("Failed to update  vehicle status.");
+    },
+  });
 
   useEffect(() => {
     refetch();
@@ -151,27 +151,23 @@ const page = () => {
   // Columns Configuration
   const Headercolumns = [
     { label: "ID", key: "id", sortable: true },
-    { label: "scheduleDate", key: "scheduleDate", sortable: true },
+    { label: "Manufacturer", key: "manufacturer", sortable: true },
     { label: "Status", key: "status", sortable: true },
-    { label: "Description", key: "description", sortable: false },
-    { label: "createdDate", key: "createdDate", sortable: false },
-    { label: "finishDateTime", key: "finishDateTime", sortable: false },
-    { label: "inCharge", key: "inCharge", sortable: false },
+    { label: "License Plate", key: "licensePlate", sortable: false },
+    { label: "Type", key: "type", sortable: false },
   ];
   const columns = [
     {
       key: "id" as keyof clientContainer,
       label: "ID",
     },
-    { key: "scheduleDate" as keyof clientContainer, label: "scheduleDate" },
+    { key: "manufacturer" as keyof clientContainer, label: "Manufacturer" },
     { key: "status" as keyof clientContainer, label: "Status" },
     {
-      key: "description" as keyof clientContainer,
-      label: "Description",
+      key: "licensePlate" as keyof clientContainer,
+      label: "License Plate",
     },
-    { key: "createdDate" as keyof clientContainer, label: "createdDate" },
-    { key: "finishDateTime" as keyof clientContainer, label: "finishDateTime" },
-    { key: "inCharge" as keyof clientContainer, label: "inCharge" },
+    { key: "type" as keyof clientContainer, label: "Type" },
   ];
   if (data) {
     console.log("data", data);
@@ -186,10 +182,9 @@ const page = () => {
   return (
     <>
       <MaintenanceNav onSearch={handleSearch} />
-
       {/* Table */}
       <div className="overflow-auto h-[72vh] shadow-md p-1">
-        {/* <div className="flex justify-end px-10">
+        <div className="flex justify-end px-10">
           <button
             onClick={() => {
               if (checkedRows.length > 0) {
@@ -237,7 +232,7 @@ const page = () => {
           >
             IN USE
           </button>
-        </div> */}
+        </div>
         <table className="w-full border-collapse bg-white text-sm text-petrol text-center text-nowrap">
           {/* Use GeneralTableHeader */}
           <TableHeader
@@ -256,8 +251,8 @@ const page = () => {
                 isChecked={checkedRows.includes(vehicle.id)}
                 onToggle={() => handleToggleRow(vehicle.id)}
                 actions={{
-                  viewPath: `/maintenance/vehicle/${vehicle.id}`,
-                  editPath: `/maintenance/vehicle/edit/${vehicle.id}`,
+                  viewPath: `/vehicle-management/vehicles/${vehicle.id}`,
+                  editPath: `/vehicle-management/vehicles/edit/${vehicle.id}`,
                 }}
               />
             ))}

@@ -9,8 +9,9 @@ const MaintenanceNav = ({ onSearch }: IProps) => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [statuses, setStatuses] = useState<string[]>([]);
-  const [types, setTypes] = useState<string[]>([]);
-  const [year, setYear] = useState<string>("");
+  const [scheduleDate, setScheduleDate] = useState("");
+  const [finishDateTime, setFinishDateTime] = useState("");
+  const [vehicle, setVehicle] = useState("");
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const keyword = e.target.value;
@@ -25,8 +26,10 @@ const MaintenanceNav = ({ onSearch }: IProps) => {
   const applyFilters = (keyword: string = searchKeyword) => {
     const filters = {
       filterStatuses: statuses,
-      filterTypes: types || null,
-      filterYear: year || null,
+
+      filterScheduleDate: scheduleDate || null,
+      filterFinishDateTime: finishDateTime || null,
+      filterVehicle: vehicle || null,
     };
     onSearch(keyword, filters);
   };
@@ -41,12 +44,6 @@ const MaintenanceNav = ({ onSearch }: IProps) => {
       prev.includes(status)
         ? prev.filter((s) => s !== status)
         : [...prev, status]
-    );
-  };
-
-  const handleTypeChange = (type: string) => {
-    setTypes((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
     );
   };
 
@@ -87,48 +84,58 @@ const MaintenanceNav = ({ onSearch }: IProps) => {
               </button>
             </div>
             <div className="grid grid-cols-2 gap-4 text-petrol">
+              {/* Schedule Date Filter */}
               <div className="col-span-1">
-                <label className="block text-sm font-medium m-1">Year</label>
+                <label className="block text-sm font-medium m-1">
+                  Schedule Date
+                </label>
                 <input
-                  type="number"
+                  type="date"
                   className="w-full border border-gray-300 rounded-md p-2 focus:ring-petrol focus:border-petrol"
-                  placeholder="Enter year"
-                  value={year}
-                  onChange={(e) => setYear(e.target.value)}
+                  value={scheduleDate}
+                  onChange={(e) => setScheduleDate(e.target.value)}
                 />
               </div>
+
+              {/* Finish Date/Time Filter */}
+              <div className="col-span-1">
+                <label className="block text-sm font-medium m-1">
+                  Finish Date & Time
+                </label>
+                <input
+                  type="datetime-local"
+                  className="w-full border border-gray-300 rounded-md p-2 focus:ring-petrol focus:border-petrol"
+                  value={finishDateTime}
+                  onChange={(e) => setFinishDateTime(e.target.value)}
+                />
+              </div>
+
+              {/* Vehicle Filter */}
+              <div className="col-span-1">
+                <label className="block text-sm font-medium m-1">Vehicle</label>
+                <input
+                  type="text"
+                  className="w-full border border-gray-300 rounded-md p-2 focus:ring-petrol focus:border-petrol"
+                  placeholder="Enter vehicle"
+                  value={vehicle}
+                  onChange={(e) => setVehicle(e.target.value)}
+                />
+              </div>
+
               <div className="col-span-2">
                 <label className="block text-sm font-medium m-1">
                   Statuses
                 </label>
                 <div className="flex flex-wrap gap-2">
-                  {["AVAILABLE", "IN_MAINTENANCENav", "IN_USE"].map(
-                    (status) => (
-                      <label key={status} className="inline-flex items-center">
-                        <input
-                          type="checkbox"
-                          className="form-checkbox text-petrol"
-                          checked={statuses.includes(status)}
-                          onChange={() => handleStatusChange(status)}
-                        />
-                        <span className="ml-2">{status}</span>
-                      </label>
-                    )
-                  )}
-                </div>
-              </div>
-              <div className="col-span-2">
-                <label className="block text-sm font-medium m-1">Types</label>
-                <div className="flex flex-wrap gap-2">
-                  {["CAR", "SEMI_TRACTOR"].map((type) => (
-                    <label key={type} className="inline-flex items-center">
+                  {["IN_PROGRESS", "COMPLETED", "CANCELLED"].map((status) => (
+                    <label key={status} className="inline-flex items-center">
                       <input
                         type="checkbox"
                         className="form-checkbox text-petrol"
-                        checked={types.includes(type)}
-                        onChange={() => handleTypeChange(type)}
+                        checked={statuses.includes(status)}
+                        onChange={() => handleStatusChange(status)}
                       />
-                      <span className="ml-2">{type}</span>
+                      <span className="ml-2">{status}</span>
                     </label>
                   ))}
                 </div>

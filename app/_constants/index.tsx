@@ -56,12 +56,4 @@ export const DrawerItems: IDrawerItem[] = [
     url: "/vehicle-management",
     id: "5",
   },
-  {
-    title: "Maintenace",
-    icon: (
-      <GrVmMaintenance className="text-center text-xl md:text-2xl lg:text-3xl font-bold" />
-    ),
-    url: "/maintenance",
-    id: "6",
-  },
 ];

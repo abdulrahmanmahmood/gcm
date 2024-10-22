@@ -15,6 +15,12 @@ import {
   IVehicleMaintenanceInput,
 } from "@/app/_utils/vehicle/maintenance.ts/Add";
 
+const STATUS_OPTIONS = {
+  IN_PROGRESS: "In Progress",
+  COMPLETED: "Completed",
+  CANCELLED: "Cancelled",
+};
+
 const AddVehiclePage = () => {
   const {
     register,
@@ -27,6 +33,51 @@ const AddVehiclePage = () => {
   const [permitFile, setPermitFile] = useState<File | null>(null);
   const router = useRouter();
   const token = getCookie("token"); // Retrieve token from cookies
+  // Function to format datetime to the required format
+  const formatDateTime = (dateTimeString: string): string => {
+    const date = new Date(dateTimeString);
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+    const milliseconds = String(date.getMilliseconds()).padStart(3, "0");
+
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}`;
+  };
+
+  // Custom validation function for datetime format
+  const validateDateTime = (value: string) => {
+    const pattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}$/;
+    if (!pattern.test(value)) {
+      return false;
+    }
+
+    const [datePart, timePart] = value.split("T");
+    const [year, month, day] = datePart.split("-").map(Number);
+    const [hourPart, minutePart, secondPart] = timePart.split(":");
+    const [seconds, milliseconds] = secondPart.split(".");
+
+    // Validate ranges
+    return (
+      year >= 1900 &&
+      year <= 9999 &&
+      month >= 1 &&
+      month <= 12 &&
+      day >= 1 &&
+      day <= 31 &&
+      Number(hourPart) >= 0 &&
+      Number(hourPart) <= 23 &&
+      Number(minutePart) >= 0 &&
+      Number(minutePart) <= 59 &&
+      Number(seconds) >= 0 &&
+      Number(seconds) <= 59 &&
+      Number(milliseconds) >= 0 &&
+      Number(milliseconds) <= 999
+    );
+  };
 
   const mutation = useMutation({
     mutationFn: (maintenanceData: IVehicleMaintenanceInput) =>
@@ -73,14 +124,19 @@ const AddVehiclePage = () => {
                 <p className="text-red-500">{errors.description.message}</p>
               )}
             </div>
-
             <div>
               <label className="block text-petrol">Status *</label>
-              <input
-                type="text"
+              <select
                 {...register("status", { required: "Status is required" })}
                 className="border rounded-lg w-full px-3 py-2"
-              />
+              >
+                <option value="">Select Status</option>
+                {Object.entries(STATUS_OPTIONS).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
               {errors.status && (
                 <p className="text-red-500">{errors.status.message}</p>
               )}
@@ -99,11 +155,19 @@ const AddVehiclePage = () => {
             </div>
 
             <div>
-              <label className="block text-petrol">Finish Date Time *</label>
+              <label className="block text-petrol">
+                Finish Date Time * (yyyy-MM-ddThh:mm:ss.sss)
+              </label>
               <input
                 type="datetime-local"
+                step="0.001"
                 {...register("finishDateTime", {
                   required: "Finish Date Time is required",
+                  validate: {
+                    format: (value) =>
+                      validateDateTime(formatDateTime(value)) ||
+                      "Invalid format. Use: yyyy-MM-ddThh:mm:ss.sss",
+                  },
                 })}
                 className="border rounded-lg w-full px-3 py-2"
               />

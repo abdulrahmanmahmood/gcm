@@ -18,7 +18,7 @@ export const addPermit = async (
   const jsonData = {
     issueDate: permitData.issueDate,
     expiryDate: permitData.expiryDate,
-    number: permitData.number,
+    no: parseInt(permitData.number),
     vehicleId: vehicleId,
   };
   console.log("permit data before send to mixedcontenty request", jsonData);
