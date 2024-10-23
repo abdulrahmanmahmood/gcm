@@ -1,17 +1,15 @@
 "use client";
-import ClientContracktsNav from "@/app/_components/UI/document/client contract/ClientContracktsNav";
 import TableBodyRow from "@/app/_components/UI/TableBodyRow";
 import TableHeader from "@/app/_components/UI/TableHeader";
-import { clientContainer, SubContractors } from "@/app/_interfaces";
+import { clientContainer } from "@/app/_interfaces";
 import { FetchAllData } from "@/app/_utils/general/FetchAllData";
 import Pagination from "@/app/_utils/Pagination";
-import { BodyRowDataOfClientContainers } from "@/public/dummy";
 import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import React, { useEffect, useState } from "react";
 import { updateEntity } from "@/app/_utils/general/Update";
-import MaintenanceNav from "@/app/_components/UI/maintenance/MaintenanceNav";
+import TripsNav from "@/app/_components/UI/Compaines/trips/TripsNav";
 const page = () => {
   const [pageNumber, setPageNumber] = useState(0); // Track the current page
   const [pageSize, setPageSize] = useState(10); // Track the page size
@@ -25,7 +23,7 @@ const page = () => {
     queryKey: ["users", pageNumber, pageSize, searchKeyword, filters, sortBy],
     queryFn: () =>
       FetchAllData(
-        "management/vehicle/trip/all",
+        "management/trip/all",
         pageNumber,
         pageSize,
         searchKeyword,
@@ -181,7 +179,7 @@ const page = () => {
 
   return (
     <>
-      <MaintenanceNav onSearch={handleSearch} />
+      <TripsNav onSearch={handleSearch} />
       {/* Table */}
       <div className="overflow-auto h-[72vh] shadow-md p-1">
         <div className="flex justify-end px-10">
