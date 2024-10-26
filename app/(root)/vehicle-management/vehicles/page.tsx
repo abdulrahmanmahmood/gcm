@@ -32,7 +32,6 @@ const page = () => {
         filters,
         sortBy,
         "vehicles"
-        // sortDirection
       ),
     placeholderData: keepPreviousData,
     staleTime: 5 * 60 * 1000,

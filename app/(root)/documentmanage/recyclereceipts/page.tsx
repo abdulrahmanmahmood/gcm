@@ -3,7 +3,6 @@ import ClientContracktsNav from "@/app/_components/UI/document/client contract/C
 import TableBodyRow from "@/app/_components/UI/TableBodyRow";
 import TableHeader from "@/app/_components/UI/TableHeader";
 import { SubContractors } from "@/app/_interfaces";
-import { FetchAllData } from "@/app/_utils/general/FetchAllData";
 import Pagination from "@/app/_utils/Pagination";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";

@@ -4,12 +4,17 @@ import { getCookie } from "cookies-next";
 interface UploadData {
   [key: string]: File | string | Blob; // Represents form-data which can include files and other fields
 }
+interface UploadOptions {
+  method?: "POST" | "PUT"; // Optional method, default is POST
+}
 
 // Create a reusable function to upload files to a given endpoint
 export const uploadFiles = async (
   endpoint: string, // The dynamic endpoint passed from the component
-  uploadData: UploadData // Data to be uploaded (files and other fields)
+  uploadData: UploadData, // Data to be uploaded (files and other fields)
+  options: UploadOptions = {} // Optional options object to choose the method
 ): Promise<any> => {
+  const { method = "POST" } = options; // Default to POST if method is not provided
   const token = getCookie("token");
   console.log(`Uploading files to ${endpoint} with data`, uploadData);
 
@@ -22,7 +27,10 @@ export const uploadFiles = async (
 
   // Make the POST request to the provided endpoint with form-data
   try {
-    const { data } = await axiosInstant.post(`${baseUrl}/${endpoint}`, formData, {
+    const { data } = await axiosInstant({
+      url: `${baseUrl}/${endpoint}`,
+      method,
+      data: formData,
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",

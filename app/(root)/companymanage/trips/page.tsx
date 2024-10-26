@@ -7,9 +7,14 @@ import Pagination from "@/app/_utils/Pagination";
 import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { updateEntity } from "@/app/_utils/general/Update";
 import TripsNav from "@/app/_components/UI/Compaines/trips/TripsNav";
+import { generateManifest } from "@/app/_utils/company/trips/GenerrateManifest";
+import Modal from "@/app/_components/UI/Compaines/trips/ManifestModal";
+import ManifestTemplate from "@/app/_components/UI/Compaines/trips/ManifestTemplate";
+import { uploadFiles } from "@/app/_utils/general/Upload";
+
 const page = () => {
   const [pageNumber, setPageNumber] = useState(0); // Track the current page
   const [pageSize, setPageSize] = useState(10); // Track the page size
@@ -18,6 +23,12 @@ const page = () => {
   const [sortBy, setSortBy] = useState<string[]>(["ID_ASC"]); // Default sort by ID ascending
   const [allChecked, setAllChecked] = useState(false); // Track if all rows are checked
   const [checkedRows, setCheckedRows] = useState<number[]>([]); // Track checked rows
+  const [manifestData, setManifestData] = useState<any>(null);
+  const [isManifestOpen, setIsManifestOpen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null); // Ref for the file input
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedTripId, setSelectedTripId] = useState<number | null>(null);
 
   const { data, error, isLoading, refetch } = useQuery({
     queryKey: ["users", pageNumber, pageSize, searchKeyword, filters, sortBy],
@@ -35,54 +46,108 @@ const page = () => {
     placeholderData: keepPreviousData,
     staleTime: 5 * 60 * 1000,
   });
-
-  // Mutation for updating vehicle status
-  const statusMutation = useMutation({
-    mutationFn: ({
-      status,
-      vehicleIds,
-    }: {
-      status: string;
-      vehicleIds: number[];
-    }) =>
-      updateEntity(`management/vehicle/change-status`, {
-        vehicleIds: vehicleIds,
-        status: status,
-      }), // Dynamic endpoint for vehicles
-    onSuccess: () => {
-      toast.success("Vehicle status updated successfully!");
-      setCheckedRows([]);
+  // Add manifest generation mutation
+  const manifestMutation = useMutation({
+    mutationFn: (tripId: number) => generateManifest(tripId),
+    onSuccess: (data) => {
+      setManifestData(data.data);
+      setIsManifestOpen(true);
+      // toast.success("Manifest generated successfully!");
       refetch();
     },
     onError: (error) => {
-      console.error("Error updating  vehicle: status", error);
-      toast.error("Failed to update  vehicle status.");
+      console.error("Error generating manifest:", error);
+      toast.error("Failed to generate manifest. Please try again.");
     },
   });
+  // Update the handle function to use the mutation
+  const handleGenerateManifest = (id: number) => {
+    manifestMutation.mutate(id);
+    console.log(id);
+  };
+  const uploadMutation = useMutation({
+    mutationFn: async () => {
+      if (!selectedFile || !selectedTripId)
+        throw new Error("Invalid upload data");
+
+      const endpoint = `management/trip/${selectedTripId}/manifest/upload`;
+      const formData = { "manifest-file": selectedFile };
+
+      await uploadFiles(endpoint, formData, { method: "PUT" });
+    },
+    onSuccess: () => {
+      toast.success("Manifest uploaded successfully!");
+      refetch();
+      setIsUploadModalOpen(false); // Close the modal
+      setSelectedFile(null);
+      setSelectedTripId(null);
+    },
+    onError: (error) => {
+      console.error("Upload failed", error);
+      toast.error("Failed to upload manifest. Please try again.");
+    },
+  });
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
+    if (file) setSelectedFile(file);
+  };
+
+  const handleUploadManifest = (tripId: number) => {
+    setSelectedTripId(tripId);
+    setIsUploadModalOpen(true); // Open the upload modal
+  };
+
+  const handleUpload = () => {
+    uploadMutation.mutate(); // Trigger the upload mutation
+  };
+
+  const handleCancel = () => {
+    setIsUploadModalOpen(false);
+    setSelectedFile(null);
+    setSelectedTripId(null);
+  };
 
   useEffect(() => {
     refetch();
   }, [searchKeyword, filters, sortBy]);
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+
+    // Format date as DD/MM/YYYY
+    const formattedDate = date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+
+    // Format time as HH:MM:SS
+    const formattedTime = date.toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    });
+
+    return (
+      <div className="flex flex-col items-center">
+        <span className="font-medium">{formattedDate}</span>
+        <span className="text-sm text-gray-500">{formattedTime}</span>
+      </div>
+    );
+  };
   // Handle Search
   const handleSearch = (keyword: string, filters: any) => {
     setSearchKeyword(keyword);
     setFilters(filters);
     setPageNumber(0); // Reset to first page when new search is triggered
   };
-
-  // ////////////handle sort
-
   // Sort Mapping
   const sortMapping: { [key: string]: string } = {
     id: "ID",
-    status: "STATUS",
-    type: "TYPE",
-    // email: "EMAIL",
-    manufacturer: "MANUFACTURER",
-    createdDate: "CREATED_DATE",
-    // enabled: "ENABLED",
-    // locked: "LOCKED",
+    hasManifest: "HASMANIFEST",
+    hasRecycleReceipt: "HASRECYCLERECEIPT",
   };
   const handleSort = (column: string) => {
     const mappedColumn = sortMapping[column];
@@ -106,13 +171,11 @@ const page = () => {
     setSortBy(newSortArray);
     setPageNumber(0); // Reset to first page when new sorting is triggered
   };
-
   //////////////// pagination ///////////////////
   // Function to handle page changes
   const handlePageChange = (newPageNumber: number) => {
     setPageNumber(newPageNumber);
   };
-
   // Function to handle page size changes
   const handlePageSizeChange = (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -120,7 +183,6 @@ const page = () => {
     setPageSize(Number(event.target.value));
     setPageNumber(0); // Reset to first page when changing page size
   };
-
   /////////////////////////Make the CheckBox //////////////////////
   const handleToggleAll = () => {
     const newAllChecked = !allChecked;
@@ -134,7 +196,6 @@ const page = () => {
       setCheckedRows([]);
     }
   };
-
   const handleToggleRow = (id: number) => {
     setCheckedRows((prev) => {
       if (prev.includes(id)) {
@@ -144,93 +205,89 @@ const page = () => {
       }
     });
   };
-
   // TableBodyRow
   // Columns Configuration
   const Headercolumns = [
     { label: "ID", key: "id", sortable: true },
-    { label: "Manufacturer", key: "manufacturer", sortable: true },
-    { label: "Status", key: "status", sortable: true },
-    { label: "License Plate", key: "licensePlate", sortable: false },
-    { label: "Type", key: "type", sortable: false },
+    { label: "Created At", key: "createdDate", sortable: true },
+    { label: "company", key: "company", sortable: false },
+    { label: "project", key: "project", sortable: false },
+    { label: "Has Manifest", key: "hasManifest", sortable: false },
+    { label: "hasRecycleReceipt", key: "hasRecycleReceipt", sortable: false },
   ];
   const columns = [
     {
       key: "id" as keyof clientContainer,
       label: "ID",
     },
-    { key: "manufacturer" as keyof clientContainer, label: "Manufacturer" },
-    { key: "status" as keyof clientContainer, label: "Status" },
     {
-      key: "licensePlate" as keyof clientContainer,
-      label: "License Plate",
+      key: "createdDate" as keyof clientContainer,
+      label: "Created At",
+      render: (value: string) => formatDate(value),
     },
-    { key: "type" as keyof clientContainer, label: "Type" },
+    { key: "company" as keyof clientContainer, label: "company" },
+    { key: "project" as keyof clientContainer, label: "project" },
+    {
+      key: "hasManifest" as keyof clientContainer,
+      label: "Has Manifest",
+      render: (value: boolean) => (
+        <span
+          className={`px-2 py-1 rounded-full ${
+            value ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+          }`}
+        >
+          {value ? "Yes" : "No"}
+        </span>
+      ),
+    },
+    {
+      key: "hasRecycleReceipt" as keyof clientContainer,
+      label: "hasRecycleReceipt",
+      render: (value: boolean) => (
+        <span
+          className={`px-2 py-1 rounded-full ${
+            value ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+          }`}
+        >
+          {value ? "Yes" : "No"}
+        </span>
+      ),
+    },
   ];
-  if (data) {
-    console.log("data", data);
-  }
-  if (error) {
-    console.log("error", error);
-  }
-  if (isLoading) {
-    console.log("isLoading", isLoading);
-  }
+
+  const downloadHandler = async (options = {}) => {
+    // Check if we're in the browser
+    if (typeof window !== "undefined") {
+      // Dynamically import html2pdf.js
+      const html2pdf = (await import("html2pdf.js")).default;
+
+      const element = document.getElementById("manifest-template");
+      if (!element) {
+        alert("Manifest template not found.");
+        return;
+      }
+
+      const opt = {
+        margin: 0,
+        filename: `Manifest-${manifestData?.manifestNo || "default"}.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: "in", format: "A4", orientation: "portrait" },
+      };
+
+      // Generate and download the PDF
+      html2pdf().from(element).set(opt).save();
+    } else {
+      // We are on the server, do nothing or handle accordingly
+      console.warn("downloadHandler was called on the server.");
+    }
+  };
 
   return (
     <>
       <TripsNav onSearch={handleSearch} />
       {/* Table */}
       <div className="overflow-auto h-[72vh] shadow-md p-1">
-        <div className="flex justify-end px-10">
-          <button
-            onClick={() => {
-              if (checkedRows.length > 0) {
-                statusMutation.mutate({
-                  status: "AVAILABLE",
-                  vehicleIds: checkedRows,
-                });
-              } else {
-                toast.warn("No vehicles selected.");
-              }
-            }}
-            className="text-white rounded-lg px-5 py-3 bg-greening m-2"
-          >
-            AVAILABLE
-          </button>
-
-          <button
-            onClick={() => {
-              if (checkedRows.length > 0) {
-                statusMutation.mutate({
-                  status: "IN_MAINTENANCE",
-                  vehicleIds: checkedRows,
-                });
-              } else {
-                toast.warn("No vehicles selected.");
-              }
-            }}
-            className="text-white rounded-lg px-5 py-3 bg-petrol m-2"
-          >
-            IN MAINTENANCE
-          </button>
-
-          <button
-            onClick={() => {
-              if (checkedRows.length > 0) {
-                statusMutation.mutate({
-                  status: "IN_USE",
-                  vehicleIds: checkedRows,
-                });
-              } else {
-                toast.warn("No vehicles selected.");
-              }
-            }}
-            className="text-white rounded-lg px-5 py-3 bg-redd m-2"
-          >
-            IN USE
-          </button>
-        </div>
         <table className="w-full border-collapse bg-white text-sm text-petrol text-center text-nowrap">
           {/* Use GeneralTableHeader */}
           <TableHeader
@@ -249,14 +306,79 @@ const page = () => {
                 isChecked={checkedRows.includes(vehicle.id)}
                 onToggle={() => handleToggleRow(vehicle.id)}
                 actions={{
-                  viewPath: `/vehicle-management/vehicles/${vehicle.id}`,
-                  editPath: `/vehicle-management/vehicles/edit/${vehicle.id}`,
+                  // viewPath: `/companymanage/trips/${vehicle.id}`,
+                  extraActions: [
+                    {
+                      name: "Generate Trip Manifest",
+                      handler: handleGenerateManifest,
+                    },
+                    {
+                      name: "Upload Manifest",
+                      handler: handleUploadManifest, // Use the new handler
+                    },
+                    // Add as many additional actions as needed
+                  ],
                 }}
               />
             ))}
           </tbody>
         </table>
       </div>
+      <input
+        type="file"
+        ref={fileInputRef}
+        style={{ display: "none" }}
+        onChange={handleFileChange}
+      />
+      {/* Manifest Modal */}
+      <Modal
+        isOpen={isManifestOpen}
+        onClose={() => setIsManifestOpen(false)}
+        title="Waste Manifest"
+        onDownload={downloadHandler}
+      >
+        <div id="manifest-template" className="p-4">
+          {manifestData && <ManifestTemplate data={manifestData} />}
+        </div>
+      </Modal>
+      {/* File Upload Modal */}
+      <Modal
+        isOpen={isUploadModalOpen}
+        onClose={handleCancel}
+        title="Upload Manifest"
+      >
+        <div className="p-4">
+          {selectedFile ? (
+            <div className="mb-4">
+              <p className="font-semibold">Selected File:</p>
+              <p>{selectedFile.name}</p>
+            </div>
+          ) : (
+            <input
+              type="file"
+              onChange={handleFileChange}
+              className="border p-2 rounded-md w-full"
+            />
+          )}
+
+          <div className="flex justify-end gap-4 mt-4">
+            <button
+              onClick={handleCancel}
+              className="border px-4 py-2 bg-redd font-semibold text-white rounded-md"
+              disabled={uploadMutation.isPending}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleUpload}
+              className="bg-petrol text-white px-4 py-2 rounded-md"
+              disabled={!selectedFile || uploadMutation.isPending}
+            >
+              {uploadMutation.isPending ? "Uploading..." : "Upload"}
+            </button>
+          </div>
+        </div>
+      </Modal>
 
       {/* Pagination controls */}
       <div className="flex justify-between items-center mt-4">
@@ -292,7 +414,7 @@ const page = () => {
             Total: {data?.totalElementsCount} vehicles
           </span>
         </div>
-        <ToastContainer />
+        <ToastContainer containerId={"TripContainer"} />
       </div>
     </>
   );
