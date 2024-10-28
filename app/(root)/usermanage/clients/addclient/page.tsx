@@ -66,7 +66,9 @@ const AddClientPage = () => {
     onError: (error: any) => {
       console.error("Error adding client:", error);
       // Set the error message from the server response
-      if (error?.response?.data?.message) {
+      if (error?.response?.data?.validationFailures) {
+        toast.error(error?.response?.data?.validationFailures[0]);
+      } else if (error?.response?.data?.message) {
         toast.error(error?.response?.data?.message);
       } else {
         toast.error("Failed to add client. Please try again.");
@@ -161,7 +163,7 @@ const AddClientPage = () => {
             </div>
 
             {/* Confirm Password */}
-            <div>
+            {/* <div>
               <label className="block text-petrol">Confirm Password *</label>
               <input
                 type="password"
@@ -174,7 +176,7 @@ const AddClientPage = () => {
               {errors.confirmPassword && (
                 <p className="text-red-500">Passwords must match</p>
               )}
-            </div>
+            </div> */}
 
             {/* Gender */}
             <div>

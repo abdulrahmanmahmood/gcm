@@ -22,7 +22,7 @@ const Pagination = ({
         className={`px-3 py-1 rounded ${
           pageNumber === 0
             ? "bg-gray-200 cursor-not-allowed"
-            : "bg-blue-500 text-white"
+            : "bg-petrol text-white"
         }`}
       >
         &#60;

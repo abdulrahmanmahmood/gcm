@@ -178,9 +178,9 @@ function UserManagementTable() {
         <button
           className="bg-greening text-white w-36 py-2 px-3 rounded-lg"
           onClick={handleUnlock}
-          disabled={lockUnlockMutation.isLoading} // Disable while mutation is loading
+          disabled={lockUnlockMutation.isPending} // Disable while mutation is loading
         >
-          {lockUnlockMutation.isLoading &&
+          {lockUnlockMutation.isPending &&
           lockUnlockMutation.variables?.locked === false
             ? "Unlocking..."
             : "Unlock"}
@@ -188,9 +188,9 @@ function UserManagementTable() {
         <button
           className="bg-redd text-white w-36 py-2 px-3 rounded-lg"
           onClick={handleLock}
-          disabled={lockUnlockMutation.isLoading} // Disable while mutation is loading
+          disabled={lockUnlockMutation.isPending} // Disable while mutation is loading
         >
-          {lockUnlockMutation.isLoading &&
+          {lockUnlockMutation.isPending &&
           lockUnlockMutation.variables?.locked === true
             ? "Locking..."
             : "Lock"}
@@ -198,7 +198,7 @@ function UserManagementTable() {
       </div>
 
       {/* component */}
-      <div className="overflow-auto h-auto shadow-md p-1 ">
+      <div className="overflow-auto h-auto shadow-md p-1  min-h-[60vh]">
         <table className="w-full border-collapse bg-white  text-sm text-petrol text-center text-nowrap overflow-auto ">
           <UserManagmentTableHeader
             sortBy={sortBy}
@@ -220,7 +220,7 @@ function UserManagementTable() {
       </div>
 
       {/* Pagination controls */}
-      <div className="flex justify-between items-center my-4 max-h-[100px] pb-4">
+      <div className="flex justify-between items-center my-4 max-h-[100px] pb-6 ">
         {/* Page Size Selector */}
         <div className="flex items-center space-x-2">
           <label htmlFor="pageSize" className="text-gray-700">

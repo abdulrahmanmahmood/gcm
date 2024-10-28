@@ -27,7 +27,7 @@ const page = () => {
           <RiContractFill className="text-petrol text-[100px] text-center mx-auto" />
         }
       />
-      <Welcome
+      {/* <Welcome
         title=" Delivery Notes "
         text1="Total cost ,Remain cost"
         text2="Start date"
@@ -53,7 +53,7 @@ const page = () => {
         icon={
           <FaFileContract className="text-petrol text-[100px] text-center mx-auto" />
         }
-      />
+      /> */}
     </div>
   );
 };

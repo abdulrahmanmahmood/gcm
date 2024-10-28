@@ -81,13 +81,6 @@ const UserManagmentTableHeader: React.FC<Props> = ({
         </th>
 
         {/* Role */}
-        <th
-          scope="col"
-          className="px-6 py-4 font-medium text-petrol text-xl cursor-pointer"
-          onClick={() => onSort("role")}
-        >
-          Role {getSortIcon("ROLE")}
-        </th>
 
         {/* Registration Date */}
         <th

@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import Pagination from "@/app/_utils/Pagination";
 import CompaniesManagementNav from "./CompaniesManagementNav";
 import CMHeader from "./CMHeader";
@@ -8,6 +8,8 @@ import { Company, CompanyAxiosResponse } from "@/app/_interfaces";
 import CMTHeader from "./CMTHeader";
 import CMBRow from "./CMBRow";
 import { fetchSuberContainerCompanies } from "@/app/_utils/company/SuberContainerCompanies/fetchSuberContainerCompanies";
+import { changeCompaniesStatus } from "@/app/_utils/company/ChangeCompaniesStatus";
+import { toast } from "react-toastify";
 
 function SCMTable() {
   const [pageNumber, setPageNumber] = useState(0); // Track the current page
@@ -15,6 +17,7 @@ function SCMTable() {
   const [searchKeyword, setSearchKeyword] = useState(""); // Track the search keyword
   const [filters, setFilters] = useState<any>({}); // Store the filters here
   const [sortBy, setSortBy] = useState<string[]>(["ID_ASC"]); // Default sort by ID ascending
+  const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
 
   const { data, error, isLoading, refetch } = useQuery<CompanyAxiosResponse>({
     queryKey: ["SCM", pageNumber, pageSize, searchKeyword, filters, sortBy],
@@ -43,6 +46,20 @@ function SCMTable() {
   useEffect(() => {
     refetch();
   }, [searchKeyword, filters, sortBy]);
+  // Mutation for changing the status of companies
+  const changeStatusMutation = useMutation({
+    mutationFn: ({ ids, status }: { ids: number[]; status: string }) =>
+      changeCompaniesStatus(ids, status),
+    onSuccess: () => {
+      refetch(); // Refetch the data after successful status change
+      setSelectedUsers([]); // Clear the selected companies
+      toast.success("Company status updated successfully!");
+    },
+    onError: (error: any) => {
+      console.error("Error changing company status", error);
+      toast.error("Failed to change company status. Please try again.");
+    },
+  });
 
   // Search Handler
 
@@ -100,9 +117,32 @@ function SCMTable() {
     setPageSize(Number(event.target.value));
     setPageNumber(0); // Reset to first page when changing page size
   };
+  //////////////////////////////////////////////////SELECT USERS HANDLERS FUNCTIONS////////////////////////
+  const handleSelectAll = (isChecked: boolean) => {
+    if (isChecked) {
+      const allUserIds = data?.content?.map((user: Company) => user.id) || [];
+      setSelectedUsers(allUserIds);
+    } else {
+      setSelectedUsers([]);
+    }
+  };
 
+  // Handle Row Checkbox Toggle
+  const handleSelectUser = (userId: number, isSelected: boolean) => {
+    if (isSelected) {
+      setSelectedUsers((prev) => [...prev, userId]);
+    } else {
+      setSelectedUsers((prev) => prev.filter((id) => id !== userId));
+    }
+  };
+
+  const handleChangeStatus = (status: string) => {
+    if (selectedUsers.length > 0) {
+      changeStatusMutation.mutate({ ids: selectedUsers, status });
+    }
+  };
   return (
-    <>
+    <div className="flex flex-col justify-between   max-h-[91vh] ">
       <CompaniesManagementNav
         onSearch={handleSearch}
         link="/companymanage/subercontainercompanies/addcompany"
@@ -110,7 +150,11 @@ function SCMTable() {
       <CMHeader />
 
       <div className="flex gap-5 justify-end p-5">
-        <button className="p-2 px-5 rounded-md bg-gray-100 text-[#2e7490] text-[18px] flex gap-3 items-center cursor-pointer border border-gray-200">
+        <button
+          className="p-2 px-5 rounded-md bg-gray-100 text-[#2e7490] text-[18px] flex gap-3 items-center cursor-pointer border border-gray-200"
+          onClick={() => handleChangeStatus("ACTIVE")}
+          disabled={changeStatusMutation.isPending}
+        >
           <svg
             width="24"
             height="24"
@@ -125,9 +169,15 @@ function SCMTable() {
               fill="#0DC30D"
             />
           </svg>
-          <span>Active</span>
+          <span>
+            {changeStatusMutation.isPending ? "Activating..." : "Active"}
+          </span>
         </button>
-        <button className="p-2 px-5 rounded-md bg-gray-100 text-[#2e7490] text-[18px] flex gap-3 items-center cursor-pointer border border-gray-200 ">
+        <button
+          className="p-2 px-5 rounded-md bg-gray-100 text-[#2e7490] text-[18px] flex gap-3 items-center cursor-pointer border border-gray-200 "
+          onClick={() => handleChangeStatus("INACTIVE")}
+          disabled={changeStatusMutation.isPending}
+        >
           <svg
             width="24"
             height="24"
@@ -150,9 +200,15 @@ function SCMTable() {
             </defs>
           </svg>
 
-          <span>Inactive</span>
+          <span>
+            {changeStatusMutation.isPending ? "Deactivating..." : "Inactive"}
+          </span>
         </button>
-        <button className="p-2 px-5 rounded-md bg-gray-100 text-[#2e7490] text-[18px] flex gap-3 items-center cursor-pointer border border-gray-200 ">
+        <button
+          className="p-2 px-5 rounded-md bg-gray-100 text-[#2e7490] text-[18px] flex gap-3 items-center cursor-pointer border border-gray-200 "
+          onClick={() => handleChangeStatus("CLOSED")}
+          disabled={changeStatusMutation.isPending}
+        >
           <svg
             width="16"
             height="21"
@@ -166,13 +222,20 @@ function SCMTable() {
             />
           </svg>
 
-          <span>Closed</span>
+          <span>
+            {changeStatusMutation.isPending ? "Closing..." : "Closed"}
+          </span>
         </button>
       </div>
       {/* component */}
       <div className="overflow-auto h-[72vh] shadow-md p-1">
         <table className="w-full border-collapse bg-white  text-sm text-petrol text-center text-nowrap ">
-          <CMTHeader sortBy={sortBy} onSort={handleSort} />
+          <CMTHeader
+            sortBy={sortBy}
+            onSort={handleSort}
+            isChecked={selectedUsers.length === data?.content?.length}
+            onSelectAll={handleSelectAll}
+          />
           <tbody className="divide-y divide-gray-100 border-t border-gray-100  max-h-[60vh]">
             {data?.content?.map((user: Company) => (
               <CMBRow
@@ -180,6 +243,8 @@ function SCMTable() {
                 editLink=""
                 key={user.id}
                 user={user}
+                isChecked={selectedUsers.includes(user.id)}
+                onSelect={handleSelectUser}
               />
             ))}
           </tbody>
@@ -221,7 +286,7 @@ function SCMTable() {
           </span>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

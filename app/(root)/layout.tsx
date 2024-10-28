@@ -23,7 +23,7 @@ export default function RootLayout({
   //   router.push("/login");
   // }
 
-  console.log("cookeis in root layout", name);
+  // console.log("cookeis in root layout", name);
 
   return (
     <div className=" flex flex-row overflow-auto m-0 ">

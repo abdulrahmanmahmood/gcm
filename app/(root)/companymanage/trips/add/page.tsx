@@ -22,7 +22,7 @@ interface WasteTypeOption {
   value: string;
   label: string;
 }
-const wasteTypeOptions: WasteTypeOption[] = [
+export const wasteTypeOptions: WasteTypeOption[] = [
   { value: "PAPER", label: "Paper" },
   { value: "CARDBOARD", label: "Cardboard" },
   { value: "WOOD", label: "Wood" },

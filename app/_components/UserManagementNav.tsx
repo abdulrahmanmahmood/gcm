@@ -50,6 +50,19 @@ const UserManagementNav = ({ onSearch }: IProps) => {
     onSearch(searchKeyword, filters);
     toggleFilterModal(); // Close the filter modal after applying filters
   };
+  const handleCancel = () => {
+    // Clear all filters
+    setLocked("");
+    setEnabled("");
+    setGender("");
+    setAuthorities("");
+    setRegistrationDate("");
+    setBirthDate("");
+    setSalary("");
+    setSearchKeyword("");
+
+    toggleFilterModal(); // Close the filter modal
+  };
 
   return (
     <div className="w-full flex flex-row space-x-6 my-2 px-10">
@@ -182,7 +195,7 @@ const UserManagementNav = ({ onSearch }: IProps) => {
             {/* Footer with buttons */}
             <div className="mt-6 flex justify-between space-x-4">
               <button
-                onClick={toggleFilterModal}
+                onClick={handleCancel}
                 className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg"
               >
                 Cancel

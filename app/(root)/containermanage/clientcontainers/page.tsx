@@ -1,4 +1,5 @@
 "use client";
+import ClientcontainerNav from "@/app/_components/UI/container/ClientcontainerNav";
 import ClientContracktsNav from "@/app/_components/UI/document/client contract/ClientContracktsNav";
 import TableBodyRow from "@/app/_components/UI/TableBodyRow";
 import TableHeader from "@/app/_components/UI/TableHeader";
@@ -6,6 +7,7 @@ import { clientContainer, SubContractors } from "@/app/_interfaces";
 import { FetchAllData } from "@/app/_utils/general/FetchAllData";
 import Pagination from "@/app/_utils/Pagination";
 import { BodyRowDataOfClientContainers } from "@/public/dummy";
+import { render } from "@react-pdf/renderer";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Container } from "postcss";
 import React, { useEffect, useState } from "react";
@@ -21,6 +23,22 @@ const ClientContractTable = () => {
     {}
   ); // Track checked rows
 
+  const { data, error, isLoading, refetch } = useQuery({
+    queryKey: ["users", pageNumber, pageSize, searchKeyword, filters, sortBy],
+    queryFn: () =>
+      FetchAllData(
+        "management/container/all",
+        pageNumber,
+        pageSize,
+        searchKeyword,
+        filters,
+        sortBy,
+        "vehicles"
+      ),
+    placeholderData: keepPreviousData,
+    staleTime: 5 * 60 * 1000,
+  });
+
   // Handle Search
   const handleSearch = (keyword: string, filters: any) => {
     setSearchKeyword(keyword);
@@ -33,13 +51,10 @@ const ClientContractTable = () => {
   // Sort Mapping
   const sortMapping: { [key: string]: string } = {
     id: "ID",
-    cost: "COST",
-    industry: "INDUSTRY",
-    email: "EMAIL",
-    startDate: "START_DATE",
-    endDate: "END_DATE",
-    // enabled: "ENABLED",
-    // locked: "LOCKED",
+    wasteType: "WASTE_TYPE",
+    status: "STATUS",
+    volume: "VOLUME",
+    weight: "WEIGHT",
   };
   const handleSort = (column: string) => {
     const mappedColumn = sortMapping[column];
@@ -83,10 +98,13 @@ const ClientContractTable = () => {
     const newAllChecked = !allChecked;
     setAllChecked(newAllChecked);
 
-    const updatedCheckedRows = BodyRowDataOfClientContainers.reduce((acc, row) => {
-      acc[row.id] = newAllChecked;
-      return acc;
-    }, {} as { [key: number]: boolean });
+    const updatedCheckedRows = BodyRowDataOfClientContainers.reduce(
+      (acc, row) => {
+        acc[row.id] = newAllChecked;
+        return acc;
+      },
+      {} as { [key: number]: boolean }
+    );
 
     setCheckedRows(updatedCheckedRows);
   };
@@ -100,13 +118,15 @@ const ClientContractTable = () => {
 
   // TableBodyRow
   // Columns Configuration
+  // Fixed column definitions
   const Headercolumns = [
     { label: "ID", key: "id", sortable: true },
-    { label: "Waste Type", key: "wasteType", sortable: false },
-    { label: "Status", key: "status", sortable: false },
-    { label: "Volume Value", key: "volumeValue", sortable: false },
-    { label: "Weight Value", key: "weightValue", sortable: false },
+    { label: "Waste Type", key: "wasteType", sortable: true },
+    { label: "Status", key: "status", sortable: true },
+    { label: "Volume", key: "volume", sortable: false },
+    { label: "Weight", key: "weight", sortable: false },
   ];
+
   const columns = [
     {
       key: "id" as keyof clientContainer,
@@ -115,15 +135,59 @@ const ClientContractTable = () => {
     {
       key: "wasteType" as keyof clientContainer,
       label: "Waste Type",
+      render: (wasteType: string) => (
+        <span className="capitalize">
+          {wasteType.toLowerCase().replace(/_/g, " ")}
+        </span>
+      ),
     },
-    { key: "status" as keyof clientContainer, label: "Status" },
-    { key: "volumeValue" as keyof clientContainer, label: "Volume Value" },
-    { key: "weightValue" as keyof clientContainer, label: "weight Value" },
+    {
+      key: "status" as keyof clientContainer,
+      label: "Status",
+      render: (status: string) => (
+        <span
+          className={`px-2 py-1 rounded-full ${
+            status === "AVAILABLE"
+              ? "bg-green-100 text-green-800"
+              : status === "MAINTENANCE"
+              ? "bg-yellow-100 text-yellow-800"
+              : "bg-red-100 text-red-800"
+          }`}
+        >
+          {status.toLowerCase()}
+        </span>
+      ),
+    },
+    {
+      key: "volume" as keyof clientContainer,
+      label: "Volume",
+      render: (volume: { value: number; unit: string }) => (
+        <span>
+          {volume?.value?.toFixed(2)}{" "}
+          <span className="px-2 py-1 rounded-full bg-blue-100 text-blue-800">
+            {volume?.unit?.toLowerCase().replace(/_/g, " ")}
+          </span>
+        </span>
+      ),
+    },
+    {
+      key: "weight" as keyof clientContainer,
+      label: "Weight",
+      render: (weight: { value: number; unit: string }) => (
+        <span>
+          {weight?.value?.toFixed(2)}{" "}
+          <span className="px-2 py-1 rounded-full bg-purple-100 text-purple-800">
+            {weight?.unit?.toLowerCase().replace(/_/g, " ")}
+          </span>
+        </span>
+      ),
+    },
   ];
+  console.log("data", data);
 
   return (
     <>
-      <ClientContracktsNav onSearch={handleSearch} />
+      <ClientcontainerNav onSearch={handleSearch} />
 
       {/* Table */}
       <div className="overflow-auto h-[72vh] shadow-md p-1">
@@ -144,7 +208,7 @@ const ClientContractTable = () => {
               />
             ))} */}
 
-            {BodyRowDataOfClientContainers?.map((contract: clientContainer) => (
+            {data?.content?.map((contract: clientContainer) => (
               <TableBodyRow
                 key={contract.id}
                 data={contract}
@@ -153,7 +217,7 @@ const ClientContractTable = () => {
                 onToggle={() => handleToggleRow(contract.id)}
                 actions={{
                   viewPath: `/containermanage/clientcontainers/${contract.id}`,
-                  editPath: `/documentmanage/subcontractors/edit/${contract.id}`,
+                  editPath: `/containermanage/clientcontainers/edit/${contract.id}`,
                 }}
               />
             ))}
@@ -182,19 +246,17 @@ const ClientContractTable = () => {
         </div>
 
         {/* Pagination */}
-        {/* <Pagination
+        <Pagination
           onPageChange={handlePageChange}
           pageNumber={pageNumber}
           pageSize={pageSize}
-          totalElementsCount={
-            BodyRowDataOfClientContainers?.totalElementsCount ?? 0
-          }
-        /> */}
+          totalElementsCount={data?.totalElementsCount ?? 0}
+        />
 
         {/* Displaying Total Users */}
         <div className="flex items-center space-x-2 mr-5">
           <span className="text-gray-700">
-            {/* Total: {BodyRowDataOfClientContainers?.totalElementsCount} users */}
+            Total: {data?.totalElementsCount} users
           </span>
         </div>
       </div>

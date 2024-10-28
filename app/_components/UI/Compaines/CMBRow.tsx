@@ -9,9 +9,11 @@ interface IProps {
   user: Company;
   viewLink: string;
   editLink: string;
+  onSelect: (userId: number, isSelected: boolean) => void;
+  isChecked: boolean;
 }
 
-const CMBRow = ({ user, viewLink, editLink }: IProps) => {
+const CMBRow = ({ user, viewLink, editLink, onSelect, isChecked }: IProps) => {
   const [showModal, setShowModal] = useState(false); // State to toggle the modal
 
   const toggleModal = () => {
@@ -21,16 +23,15 @@ const CMBRow = ({ user, viewLink, editLink }: IProps) => {
   return (
     <tr key={user.id} className="hover:bg-gray-50">
       {/* Check Box */}
-      <td className="px-6 py-4 whitespace-nowrap mx-auto ">
+      <td className="px-6 py-4 whitespace-nowrap mx-auto">
         <div className="flex items-center">
           <input
             id="checkbox-all"
             type="checkbox"
-            className="size-8 text-petrol accent-petrol bg-gray-100 rounded-[50%]  focus:ring-petrol "
+            className="size-8 text-petrol accent-petrol bg-gray-100 rounded-[50%] focus:ring-petrol "
+            checked={isChecked}
+            onChange={() => onSelect(user.id, !isChecked)}
           />
-          {/* <label htmlFor="checkbox-all" className="sr-only">
-          checkbox
-        </label> */}
         </div>
       </td>
 

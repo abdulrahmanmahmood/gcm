@@ -1,185 +1,164 @@
 "use client";
 import TitleAddAndEdit from "@/app/_components/UI/TitleAddAndEdit";
-import React from "react";
+import { fetchOneData } from "@/app/_utils/general/FetchOneData";
+import { useQuery } from "@tanstack/react-query";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 const page = ({ params }: { params: { container: string } }) => {
-  const containerId = parseInt(params.container, 10); // Convert the container ID from string to number
+  const containerId = parseInt(params.container, 10);
+
+  // Fetch container data
+  const {
+    data: container,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ["viewContainer", containerId],
+    queryFn: () =>
+      fetchOneData(`management/container`, containerId, "Fetch Container"),
+    select: (data: any) => data.data,
+  });
+
+  // Initialize form with container data once it's loaded
   const {
     register,
     handleSubmit,
-    watch,
     reset,
     formState: { errors },
   } = useForm();
 
-  const onsubmit = () => {
-    console.log("Form submitted");
+  useEffect(() => {
+    if (container) {
+      reset({
+        wasteType: container.wasteType || "",
+        status: container.status || "",
+        volume: container.volume?.value || "",
+        weight: container.weight?.value || "",
+        latitude: container.location?.latitude || "",
+        longitude: container.location?.longitude || "",
+      });
+    }
+  }, [container, reset]);
+
+  const onsubmit = (data: any) => {
+    console.log("Form submitted with data:", data);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="bg-red-100 text-red-700 p-4 rounded-lg">
+          Error loading container data.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-5">
       <div className="flex flex-col justify-between">
-        <TitleAddAndEdit title="Edit a  Containers" />
+        <TitleAddAndEdit title="Edit Container" />
         <div>
           <form
-            className=" space-y-6 my-9"
+            className="space-y-6 my-9"
             method="POST"
             onSubmit={handleSubmit(onsubmit)}
           >
             <div className="w-full flex justify-end">
               <button className="flex items-center justify-center space-x-2 bg-petrol text-2xl font-semibold w-[160px] py-3 px-2 rounded-lg text-white">
-                Save{" "}
+                Save
               </button>
             </div>
-            {/* Form Fields */}
-            <div className="grid grid-cols-3 gap-6 mb-6">
+
+            <div className="grid grid-cols-3 gap-6">
               <div>
-                <label className="block text-petrol">WasteType *</label>
+                <label className="block text-petrol">Waste Type *</label>
                 <input
                   type="text"
-                  {...register("fullName", { required: true })}
+                  {...register("wasteType", { required: true })}
                   className="border rounded-lg w-full px-3 py-2"
                 />
-                {errors.fullName && (
-                  <p className="text-red-500">WasteType is required</p>
+                {errors.wasteType && (
+                  <p className="text-red-500">Waste Type is required</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-petrol">volume *</label>
+                <label className="block text-petrol">Status *</label>
                 <input
-                  type="email"
-                  {...register("email", { required: true })}
+                  type="text"
+                  {...register("status", { required: true })}
                   className="border rounded-lg w-full px-3 py-2"
                 />
-                {errors.email && (
-                  <p className="text-red-500">volume is required</p>
+                {errors.status && (
+                  <p className="text-red-500">Status is required</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-petrol"> *</label>
+                <label className="block text-petrol">Volume (Liters) *</label>
                 <input
-                  type="text"
-                  {...register("website", { required: true })}
+                  type="float"
+                  {...register("volume", { required: true })}
                   className="border rounded-lg w-full px-3 py-2"
                 />
-                {errors.website && (
-                  <p className="text-red-500">website is required</p>
-                )}
-              </div>
-              <div>
-                <label className="block text-petrol">weight *</label>
-                <input
-                  type="text"
-                  {...register("faxNumber", { required: true })}
-                  className="border rounded-lg w-full px-3 py-2"
-                />
-                {errors.website && (
-                  <p className="text-red-500">website is required</p>
+                {errors.volume && (
+                  <p className="text-red-500">Volume is required</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-petrol">industry</label>
+                <label className="block text-petrol">
+                  Weight (Kilograms) *
+                </label>
                 <input
-                  type="text"
-                  {...register("industry", { required: true })} // Optional: Use valueAsNumber to make sure it's treated as a number
+                  type="float"
+                  {...register("weight", { required: true })}
                   className="border rounded-lg w-full px-3 py-2"
                 />
+                {errors.weight && (
+                  <p className="text-red-500">Weight is required</p>
+                )}
               </div>
 
               <div>
-                <label className="block text-petrol">Head Name</label>
+                <label className="block text-petrol">Latitude *</label>
                 <input
-                  type="text"
-                  {...register("headName", { required: true })} // Optional: Use valueAsNumber to make sure it's treated as a number
+                  type="number"
+                  step="any"
+                  {...register("latitude", { required: true })}
                   className="border rounded-lg w-full px-3 py-2"
                 />
-              </div>
-              <div>
-                <label className="block text-gray-700">Head Email</label>
-                <input
-                  type="text"
-                  {...register("headEmail", { required: true })} // Optional: Use valueAsNumber to make sure it's treated as a number
-                  className="border rounded-lg w-full px-3 py-2"
-                />
+                {errors.latitude && (
+                  <p className="text-red-500">Latitude is required</p>
+                )}
               </div>
 
               <div>
-                <label className="block text-gray-700">Phone Number</label>
+                <label className="block text-petrol">Longitude *</label>
                 <input
-                  type="text"
-                  {...register("phoneNumber")}
+                  type="number"
+                  step="any"
+                  {...register("longitude", { required: true })}
                   className="border rounded-lg w-full px-3 py-2"
                 />
-              </div>
-              <div>
-                <label className="block text-gray-700">Head Phone Number</label>
-                <input
-                  type="text"
-                  {...register("headPhoneNumber")}
-                  className="border rounded-lg w-full px-3 py-2"
-                />
-              </div>
-            </div>
-
-            {/* Address Section */}
-            <div>
-              <h3 className="text-xl font-semibold bg-petrol text-white py-3 text-center rounded-lg mb-4">
-                Address
-              </h3>
-              <div className="grid grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-gray-700">Street</label>
-                  <input
-                    type="text"
-                    {...register("street")}
-                    className="border rounded-lg w-full px-3 py-2"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-gray-700">Zip Code</label>
-                  <input
-                    type="text"
-                    {...register("zipCode")}
-                    className="border rounded-lg w-full px-3 py-2"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-gray-700">City</label>
-                  <input
-                    type="text"
-                    {...register("city")}
-                    className="border rounded-lg w-full px-3 py-2"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-gray-700">State</label>
-                  <input
-                    type="text"
-                    {...register("state")}
-                    className="border rounded-lg w-full px-3 py-2"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-gray-700">Country</label>
-                  <input
-                    type="text"
-                    {...register("country")}
-                    className="border rounded-lg w-full px-3 py-2"
-                  />
-                </div>
+                {errors.longitude && (
+                  <p className="text-red-500">Longitude is required</p>
+                )}
               </div>
             </div>
           </form>
         </div>
-      </div>{" "}
+      </div>
     </div>
   );
 };

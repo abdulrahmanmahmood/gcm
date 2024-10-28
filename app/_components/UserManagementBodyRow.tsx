@@ -90,13 +90,6 @@ const UserManagementBodyRow = ({ user, onSelect, isChecked }: IProps) => {
         </span>
       </td>
 
-      {/* Role Value */}
-      <td className="px-6 py-4">
-        <span className="inline-flex items-center text-nowrap">
-          {formattedRole}
-        </span>
-      </td>
-
       {/* REgistration Date */}
       <td className="px-6 py-4">
         <span className="inline-flex items-center text-nowrap">

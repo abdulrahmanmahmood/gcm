@@ -147,16 +147,16 @@ const CleintManagementTable = () => {
   };
 
   return (
-    <>
+    <div className="flex flex-col justify-between   max-h-[91vh] ">
       <ClientManagementNav onSearch={handleSearch} />
       <UserManagementHeader />
       <div className="flex flex-row gap-5 justify-end mx-4 my-2  ">
         <button
           className="bg-greening text-white w-36 py-2 px-3 rounded-lg"
           onClick={handleUnlock}
-          disabled={lockUnlockMutation.isLoading} // Disable while mutation is loading
+          disabled={lockUnlockMutation.isPending} // Disable while mutation is loading
         >
-          {lockUnlockMutation.isLoading &&
+          {lockUnlockMutation.isPending &&
           lockUnlockMutation.variables?.locked === false
             ? "Unlocking..."
             : "Unlock"}
@@ -164,9 +164,9 @@ const CleintManagementTable = () => {
         <button
           className="bg-redd text-white w-36 py-2 px-3 rounded-lg"
           onClick={handleLock}
-          disabled={lockUnlockMutation.isLoading} // Disable while mutation is loading
+          disabled={lockUnlockMutation.isPending} // Disable while mutation is loading
         >
-          {lockUnlockMutation.isLoading &&
+          {lockUnlockMutation.isPending &&
           lockUnlockMutation.variables?.locked === true
             ? "Locking..."
             : "Lock"}
@@ -229,7 +229,7 @@ const CleintManagementTable = () => {
           </span>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
